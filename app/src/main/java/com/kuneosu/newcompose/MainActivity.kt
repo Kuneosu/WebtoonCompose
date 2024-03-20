@@ -1,43 +1,58 @@
 package com.kuneosu.newcompose
 
+import android.net.Uri
+import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.annotation.OptIn
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.request.ImageRequest
 import com.kuneosu.newcompose.ui.theme.NewComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -80,10 +95,92 @@ class MainActivity : ComponentActivity() {
                         endColor = Color(0xFF00BEB2)
                     )
 
+                    VideoPlayer()
+
+                    GifImage()
+
                 }
             }
         }
     }
+
+
+}
+
+@Composable
+fun GifImage(
+) {
+    val context = LocalContext.current
+    val imageLoader = coil.ImageLoader.Builder(context)
+        .components {
+            if (SDK_INT >= 28) {
+                add(ImageDecoderDecoder.Factory())
+            } else {
+                add(GifDecoder.Factory())
+            }
+        }
+        .build()
+
+    val painter = rememberAsyncImagePainter(
+        ImageRequest.Builder(LocalContext.current).data(data = R.drawable.image)
+            .apply(block = fun ImageRequest.Builder.() {
+                placeholder(R.drawable.ic_launcher_foreground)
+                error(R.drawable.ic_launcher_background)
+            }).build(), imageLoader = imageLoader
+    )
+
+    Image(
+        painter = painter,
+        contentDescription = "",
+        modifier = Modifier
+            .fillMaxSize()
+            .clip(RoundedCornerShape(10.dp)),
+        contentScale = ContentScale.Fit
+    )
+}
+
+
+@OptIn(UnstableApi::class)
+@Composable
+fun VideoPlayer() {
+    val context = LocalContext.current
+    val exoPlayer = ExoPlayer.Builder(context).build()
+    val video =
+        "https://kr-a.kakaopagecdn.com/P/C/2320/c1a/78363bcd-eec2-4d43-8045-c1f732ad87a1.webm"
+    val videoUri = Uri.parse(video)
+    val mediaSource = remember {
+        androidx.media3.common.MediaItem.Builder()
+            .setUri(videoUri)
+            .build()
+    }
+
+
+    LaunchedEffect(mediaSource) {
+        exoPlayer.setMediaItem(mediaSource)
+        exoPlayer.prepare()
+        exoPlayer.play()
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
+
+    AndroidView(
+        factory = { ctx ->
+            PlayerView(ctx).apply {
+                player = exoPlayer
+                useController = false
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .background(Color.White),
+    )
+
+
 }
 
 @Composable
