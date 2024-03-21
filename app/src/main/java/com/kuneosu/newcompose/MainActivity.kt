@@ -14,9 +14,11 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -69,12 +72,47 @@ class MainActivity : ComponentActivity() {
             title = "픽 미 업!",
             author = listOf("조우네", "와삭바삭", "헤르모드"),
             mainImage = R.drawable.toon1,
-            backgroundImage = R.drawable.toon1back
+            backgroundImage = R.drawable.toon1back,
+            mainColor = Color(43, 50, 71, 255)
+        )
+        val toon2 = Toon(
+            title = "안드로이드 여행기",
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
         )
         setContent {
             NewComposeTheme {
-                Column {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(34, 34, 34, 255))
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        GradientAnimationButton(
+                            text = "실시간 랭킹",
+                            startColor = Color(255, 235, 59, 255),
+                            endColor = Color(233, 30, 99, 255)
+                        )
+                        GradientAnimationButton(
+                            text = "지금 핫한",
+                            startColor = Color(156, 39, 176, 255),
+                            endColor = Color(0, 188, 212, 255)
+                        )
+                        GradientAnimationButton(
+                            text = "오늘 연재무료",
+                            startColor = Color(255, 193, 7, 255),
+                            endColor = Color(14, 228, 255, 255)
+                        )
+                    }
                     BigToonCard(toon = toon)
+                    BigToonCard(toon = toon2)
                 }
 
 
@@ -88,30 +126,58 @@ class MainActivity : ComponentActivity() {
 fun BigToonCard(toon: Toon) {
     Card(
         modifier = Modifier
-            .size(400.dp)
+            .size(400.dp, 300.dp)
             .padding(10.dp)
     ) {
-        Box {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
             androidx.compose.foundation.Image(
                 painter = painterResource(id = toon.backgroundImage),
                 contentDescription = "background",
                 modifier = Modifier
                     .fillMaxSize(),
-                contentScale = ContentScale.Crop)
+                contentScale = ContentScale.Crop
+            )
 
-//            androidx.compose.foundation.Image(
-//                painter = painterResource(id = toon.mainImage),
-//                contentDescription ="main",
-//                modifier = Modifier
-//                    .fillMaxSize(),
-//                contentScale = ContentScale.Fit)
-            GifImage()
+            androidx.compose.foundation.Image(
+                painter = painterResource(id = toon.mainImage),
+                contentDescription = "main",
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
+
+            ToonMask(toon = toon)
         }
-
 
 
     }
 }
+
+@Composable
+fun ToonMask(toon: Toon) {
+    val gradient = Brush.verticalGradient(
+        colors = listOf(toon.mainColor, Color(255, 255, 255, 0)),
+        startY = 650f, 300f,
+    )
+    Box(
+        modifier = Modifier
+            .background(gradient)
+            .fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        Text(
+            text = toon.title,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            modifier = Modifier
+                .padding(bottom = 30.dp)
+        )
+    }
+}
+
 
 // GIF 이미지 로더
 @Composable
@@ -144,8 +210,7 @@ fun GifImage(
         painter = painter,
         contentDescription = "",
         modifier = Modifier
-            .fillMaxSize()
-            .clip(RoundedCornerShape(10.dp)),
+            .size(250.dp),
         contentScale = ContentScale.Fit
     )
 }
@@ -278,6 +343,7 @@ data class Toon(
     val author: List<String>,
     val mainImage: Int,
     val backgroundImage: Int,
+    val mainColor: Color,
 )
 
 
