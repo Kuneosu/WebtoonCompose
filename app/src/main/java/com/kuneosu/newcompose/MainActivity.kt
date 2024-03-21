@@ -1,9 +1,9 @@
 package com.kuneosu.newcompose
 
-import android.media.Image
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.OptIn
@@ -24,8 +24,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -40,13 +38,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -58,7 +55,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
@@ -68,28 +64,15 @@ import com.kuneosu.newcompose.ui.theme.NewComposeTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val toon = Toon(
-            title = "픽 미 업!",
-            author = listOf("조우네", "와삭바삭", "헤르모드"),
-            mainImage = R.drawable.toon1,
-            backgroundImage = R.drawable.toon1back,
-            mainColor = Color(43, 50, 71, 255)
-        )
-        val toon2 = Toon(
-            title = "안드로이드 여행기",
-            author = listOf("조우네", "와삭바삭", "헤르모드"),
-            mainImage = R.drawable.ic_launcher_foreground,
-            backgroundImage = R.drawable.ic_launcher_background,
-            mainColor = Color(80, 224, 144, 255)
-        )
+
         setContent {
             NewComposeTheme {
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color(34, 34, 34, 255))
                 ) {
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -111,8 +94,16 @@ class MainActivity : ComponentActivity() {
                             endColor = Color(14, 228, 255, 255)
                         )
                     }
-                    BigToonCard(toon = toon)
-                    BigToonCard(toon = toon2)
+
+                    val toonList = DataProvider.toonList
+                    val sevenToons = toonList.chunked(7)
+
+
+                    LazyColumn {
+                        sevenToons.forEach { toons ->
+                            item { ToonColumn(toons = toons) }
+                        }
+                    }
                 }
 
 
@@ -121,16 +112,252 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+object DataProvider {
+    val toonList = listOf(
+        Toon(
+            title = R.drawable.toontitle,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon1,
+            backgroundImage = R.drawable.toon1back,
+            mainColor = Color(43, 50, 71, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toon2title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon2image,
+            backgroundImage = R.drawable.toon2back,
+            mainColor = Color(255, 152, 0, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toontitle,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon1,
+            backgroundImage = R.drawable.toon1back,
+            mainColor = Color(43, 50, 71, 255)
+        ),
+        Toon(
+            title = R.drawable.toon2title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon2image,
+            backgroundImage = R.drawable.toon2back,
+            mainColor = Color(255, 152, 0, 255)
+        ),
+        Toon(
+            title = R.drawable.toontitle,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon1,
+            backgroundImage = R.drawable.toon1back,
+            mainColor = Color(43, 50, 71, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toon2title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon2image,
+            backgroundImage = R.drawable.toon2back,
+            mainColor = Color(255, 152, 0, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toontitle,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon1,
+            backgroundImage = R.drawable.toon1back,
+            mainColor = Color(43, 50, 71, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toon2title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon2image,
+            backgroundImage = R.drawable.toon2back,
+            mainColor = Color(255, 152, 0, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toontitle,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon1,
+            backgroundImage = R.drawable.toon1back,
+            mainColor = Color(43, 50, 71, 255)
+        ),
+        Toon(
+            title = R.drawable.toon2title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon2image,
+            backgroundImage = R.drawable.toon2back,
+            mainColor = Color(255, 152, 0, 255)
+        ),
+        Toon(
+            title = R.drawable.toontitle,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon1,
+            backgroundImage = R.drawable.toon1back,
+            mainColor = Color(43, 50, 71, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toon2title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon2image,
+            backgroundImage = R.drawable.toon2back,
+            mainColor = Color(255, 152, 0, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toontitle,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon1,
+            backgroundImage = R.drawable.toon1back,
+            mainColor = Color(43, 50, 71, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toon2title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon2image,
+            backgroundImage = R.drawable.toon2back,
+            mainColor = Color(255, 152, 0, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toontitle,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon1,
+            backgroundImage = R.drawable.toon1back,
+            mainColor = Color(43, 50, 71, 255)
+        ),
+        Toon(
+            title = R.drawable.toon2title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon2image,
+            backgroundImage = R.drawable.toon2back,
+            mainColor = Color(255, 152, 0, 255)
+        ),
+        Toon(
+            title = R.drawable.toontitle,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon1,
+            backgroundImage = R.drawable.toon1back,
+            mainColor = Color(43, 50, 71, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+        Toon(
+            title = R.drawable.toon2title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.toon2image,
+            backgroundImage = R.drawable.toon2back,
+            mainColor = Color(255, 152, 0, 255)
+        ),
+        Toon(
+            title = R.drawable.toon1title,
+            author = listOf("조우네", "와삭바삭", "헤르모드"),
+            mainImage = R.drawable.ic_launcher_foreground,
+            backgroundImage = R.drawable.ic_launcher_background,
+            mainColor = Color(80, 224, 144, 255)
+        ),
+    )
+}
 
 @Composable
-fun BigToonCard(toon: Toon) {
+fun ToonColumn(toons: List<Toon>) {
+    val firstToon = toons[0]
+    val otherToons = toons.subList(1, toons.size)
+    val chunkedList = otherToons.chunked(3)
+
+    Column {
+        BigToonCard(toon = firstToon)
+        chunkedList.forEach { chunk ->
+            Row {
+                chunk.forEach { toon ->
+                    SmallToonCard(toon = toon)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SmallToonCard(toon: Toon) {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val cardWidth = (screenWidth - 9.dp) / 3
+
     Card(
         modifier = Modifier
-            .size(400.dp, 300.dp)
-            .padding(10.dp)
+            .size(cardWidth, 280.dp)
+            .padding(5.dp)
     ) {
         Box(
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.BottomCenter,
         ) {
             androidx.compose.foundation.Image(
                 painter = painterResource(id = toon.backgroundImage),
@@ -145,13 +372,100 @@ fun BigToonCard(toon: Toon) {
                 contentDescription = "main",
                 modifier = Modifier
                     .fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            val gradient = Brush.verticalGradient(
+                colors = listOf(toon.mainColor, Color(255, 255, 255, 0)),
+                startY = 650f, 300f,
+            )
+            Box(
+                modifier = Modifier
+                    .background(gradient)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = toon.title),
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .padding(bottom = 8.dp)
+                            .fillMaxWidth()
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun BigToonCard(toon: Toon) {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val cardWidth = screenWidth - 9.dp
+
+    Card(
+        modifier = Modifier
+            .size(cardWidth, 300.dp)
+            .padding(5.dp)
+    ) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            androidx.compose.foundation.Image(
+                painter = painterResource(id = toon.backgroundImage),
+                contentDescription = "background",
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentScale = ContentScale.Crop,
+            )
+
+            androidx.compose.foundation.Image(
+                painter = painterResource(id = toon.mainImage),
+                contentDescription = "main",
+                modifier = Modifier
+                    .fillMaxSize(),
                 contentScale = ContentScale.Fit
             )
 
-            ToonMask(toon = toon)
+            val gradient = Brush.verticalGradient(
+                colors = listOf(toon.mainColor, Color(255, 255, 255, 0)),
+                startY = 650f, 300f,
+            )
+            Box(
+                modifier = Modifier
+                    .background(gradient)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(id = toon.title),
+                        contentDescription = "",
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .padding(bottom = 6.dp)
+                            .fillMaxWidth()
+                    )
+                    Text(
+                        text = toon.author.toString()
+                            .replace("[", "")
+                            .replace("]", ""),
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.LightGray,
+                        modifier = Modifier
+                            .padding(bottom = 26.dp)
+                    )
+                }
+            }
         }
-
-
     }
 }
 
@@ -167,22 +481,32 @@ fun ToonMask(toon: Toon) {
             .fillMaxSize(),
         contentAlignment = Alignment.BottomCenter,
     ) {
-        Text(
-            text = toon.title,
-            fontSize = 30.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier
-                .padding(bottom = 30.dp)
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = toon.title),
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(bottom = 6.dp)
+
+            )
+            Text(
+                text = toon.author.toString(),
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.LightGray,
+                modifier = Modifier
+                    .padding(bottom = 26.dp)
+            )
+        }
     }
 }
 
 
 // GIF 이미지 로더
 @Composable
-fun GifImage(
-) {
+fun GifImage() {
     val context = LocalContext.current
     val imageLoader = coil.ImageLoader.Builder(context)
         .components {
@@ -339,7 +663,7 @@ fun GradientButton(
 }
 
 data class Toon(
-    val title: String,
+    val title: Int,
     val author: List<String>,
     val mainImage: Int,
     val backgroundImage: Int,
