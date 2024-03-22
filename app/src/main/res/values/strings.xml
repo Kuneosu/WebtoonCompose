@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">NewCompose</string>
+    <string name="text_calendar">캘린더</string>
 </resources>

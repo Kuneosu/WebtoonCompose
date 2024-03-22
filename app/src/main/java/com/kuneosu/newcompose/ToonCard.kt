@@ -29,8 +29,10 @@ fun MakeSevenToons(toons: List<Toon>) {
     val sevenToons = toons.chunked(7)
 
     LazyColumn(
-        modifier = Modifier.background(Color.Black)
-    ){
+        modifier = Modifier
+            .background(Color.Black)
+            .fillMaxWidth()
+    ) {
         item {
             sevenToons.forEach { toons ->
                 OneBigSixSmall(toons = toons)
@@ -136,7 +138,18 @@ fun BigToonCard(toon: Toon) {
                 contentScale = ContentScale.Crop,
             )
 
-            GifImage(source = toon.mainGIF!!)
+            if (toon.mainGIF != null) {
+                GifImage(source = toon.mainGIF)
+            } else {
+                Image(
+                    painter = painterResource(id = toon.mainImage!!),
+                    contentDescription = "main",
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                )
+            }
+
 
             val gradient = Brush.verticalGradient(
                 colors = listOf(toon.mainColor, Color(255, 255, 255, 0)),
