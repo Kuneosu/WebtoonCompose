@@ -60,7 +60,7 @@ fun GifImage(source: Int) {
         contentDescription = "",
         modifier = Modifier
             .fillMaxSize(),
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Fit
     )
 }
 

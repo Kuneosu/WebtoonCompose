@@ -38,7 +38,6 @@ import androidx.compose.ui.unit.sp
 fun GradientAnimationButton(text: String, startColor: Color, endColor: Color) {
     val currentFontSizePx = with(LocalDensity.current) { 100.dp.toPx() } / 2
     val currentFontSizeDoublePx = currentFontSizePx * 2
-
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val offset by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -52,7 +51,7 @@ fun GradientAnimationButton(text: String, startColor: Color, endColor: Color) {
         colors = listOf(startColor, endColor),
         start = Offset(offset, offset),
         end = Offset(offset + currentFontSizePx, offset + currentFontSizePx),
-        tileMode = TileMode.Mirror,
+        tileMode = TileMode.Mirror
     )
 
     Surface(

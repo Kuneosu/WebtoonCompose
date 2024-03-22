@@ -19,6 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
@@ -32,11 +35,21 @@ import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             NewComposeTheme {
+                val navController = rememberNavController()
 
-                MainScreen()
+                NavHost(navController = navController,
+                    startDestination = "splash_screen"){
+
+                    composable("splash_screen"){
+                        SplashScreen(navController)
+                    }
+
+                    composable("main_screen"){
+                        MainScreen()
+                    }
+                }
 
             }
         }
