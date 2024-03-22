@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,9 +24,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@Composable
+fun MakeSevenToons(toons: List<Toon>) {
+    val sevenToons = toons.chunked(7)
+
+    LazyColumn {
+        item {
+            sevenToons.forEach { toons ->
+                OneBigSixSmall(toons = toons)
+            }
+        }
+    }
+}
 
 @Composable
-fun ToonColumn(toons: List<Toon>) {
+fun OneBigSixSmall(toons: List<Toon>) {
     val firstToon = toons[0]
     val otherToons = toons.subList(1, toons.size)
     val chunkedList = otherToons.chunked(3)

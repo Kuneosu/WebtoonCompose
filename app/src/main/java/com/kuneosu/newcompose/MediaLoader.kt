@@ -26,6 +26,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
+import coil.request.repeatCount
 
 
 // GIF 이미지 로더
@@ -50,7 +51,7 @@ fun GifImage(source: Int) {
                 placeholder(R.drawable.ic_launcher_foreground)
                 // image 를 불러오는데 실패했을 때 표시할 이미지
                 error(R.drawable.ic_launcher_background)
-            }).build(), imageLoader = imageLoader
+            }).repeatCount(0).build(), imageLoader = imageLoader
     )
 
     // image 설정
