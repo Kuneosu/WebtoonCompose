@@ -64,5 +64,5 @@ fun MainTopBar() {
                 )
             }
         }
-        )
+    )
 }

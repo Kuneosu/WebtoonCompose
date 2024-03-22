@@ -66,6 +66,7 @@ dependencies {
     implementation("io.coil-kt:coil:2.0.0-rc02")
     implementation("io.coil-kt:coil-gif:2.0.0-rc02")
     implementation("io.coil-kt:coil-compose:2.0.0-rc02")
+    implementation("me.onebone:toolbar-compose:2.3.5")
     implementation(libs.androidx.ui.test.junit4)
     implementation(libs.volley)
     testImplementation(libs.junit)

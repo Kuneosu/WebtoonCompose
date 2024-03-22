@@ -28,7 +28,9 @@ import androidx.compose.ui.unit.sp
 fun MakeSevenToons(toons: List<Toon>) {
     val sevenToons = toons.chunked(7)
 
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier.background(Color.Black)
+    ){
         item {
             sevenToons.forEach { toons ->
                 OneBigSixSmall(toons = toons)
