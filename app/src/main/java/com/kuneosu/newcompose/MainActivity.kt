@@ -152,7 +152,7 @@ fun MainTabRow() {
     ) { page ->
         when (page) {
             0 -> {
-                MakeSevenToons(toons = DataProvider.toonList)
+                MakeSevenToons(toons = DataProvider.toonList2)
 
             }
 
@@ -162,7 +162,7 @@ fun MainTabRow() {
             }
 
             2 -> {
-                MakeSevenToons(toons = DataProvider.toonList)
+                MakeSevenToons(toons = DataProvider.toonList2)
 
             }
 
@@ -179,7 +179,6 @@ fun MainContent() {
     val toonList = DataProvider.toonList
     Column {
         MainTabRow()
-        MakeSevenToons(toons = toonList)
     }
 }
 
