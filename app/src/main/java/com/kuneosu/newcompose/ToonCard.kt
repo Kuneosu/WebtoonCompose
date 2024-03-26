@@ -1,7 +1,9 @@
 package com.kuneosu.newcompose
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +22,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -64,6 +67,7 @@ fun OneBigSixSmall(toons: List<Toon>) {
 
 @Composable
 fun SmallToonCard(toon: Toon) {
+    val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val cardWidth = (screenWidth - 9.dp) / 3
@@ -72,6 +76,13 @@ fun SmallToonCard(toon: Toon) {
         modifier = Modifier
             .size(cardWidth, 280.dp)
             .padding(5.dp)
+            .clickable {
+                val intent = Intent(context, ToonActivity::class.java)
+                intent.putExtra("toon_title", toon.titleImage)
+                intent.putExtra("toon_background", toon.backgroundImage)
+                intent.putExtra("toon_main_image", toon.mainImage)
+                context.startActivity(intent)
+            }
     ) {
         Box(
             contentAlignment = Alignment.BottomCenter,
@@ -119,8 +130,10 @@ fun SmallToonCard(toon: Toon) {
     }
 }
 
+
 @Composable
 fun BigToonCard(toon: Toon) {
+    val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val cardWidth = screenWidth - 9.dp
@@ -129,6 +142,13 @@ fun BigToonCard(toon: Toon) {
         modifier = Modifier
             .size(cardWidth, 300.dp)
             .padding(5.dp)
+            .clickable {
+                val intent = Intent(context, ToonActivity::class.java)
+                intent.putExtra("toon_title", toon.titleImage)
+                intent.putExtra("toon_background", toon.backgroundImage)
+                intent.putExtra("toon_main_gif", toon.mainGIF)
+                context.startActivity(intent)
+            }
     ) {
         Box(
             contentAlignment = Alignment.Center
@@ -142,7 +162,7 @@ fun BigToonCard(toon: Toon) {
             )
 
             if (toon.mainGIF != null) {
-                GifImage(source = toon.mainGIF)
+                GifImage(source = toon.mainGIF, modifier = Modifier.fillMaxSize())
             } else {
                 Image(
                     painter = painterResource(id = toon.mainImage!!),

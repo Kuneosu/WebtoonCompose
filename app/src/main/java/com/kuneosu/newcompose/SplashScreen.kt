@@ -3,6 +3,7 @@ package com.kuneosu.newcompose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -32,7 +33,7 @@ fun SplashScreen(navController: NavController) {
             .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
-        GifImage(source = R.drawable.splash)
+        GifImage(source = R.drawable.splash, modifier = Modifier.fillMaxSize())
     }
 
 

@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
                     composable("main_screen") {
                         MainScreen()
                     }
+
                 }
 
             }
@@ -216,7 +217,6 @@ fun Preview() {
 @Composable
 fun NewTabRow() {
     val pages = listOf("지금 핫한", "오늘 연재무료", "실시간 랭킹", "오늘 뭐볼까?")
-    val pagerState = rememberPagerState(initialPage = pages.size / 2)
     val newPagerState = androidx.compose.foundation.pager.rememberPagerState(
         initialPage = pages.size / 2
     ) {

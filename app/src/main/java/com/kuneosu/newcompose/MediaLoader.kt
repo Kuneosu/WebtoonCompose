@@ -31,7 +31,7 @@ import coil.request.repeatCount
 
 // GIF 이미지 로더
 @Composable
-fun GifImage(source: Int) {
+fun GifImage(source: Int,modifier: Modifier) {
     val context = LocalContext.current
     val imageLoader = coil.ImageLoader.Builder(context)
         .components {
@@ -58,10 +58,10 @@ fun GifImage(source: Int) {
     Image(
         painter = painter,
         contentDescription = "",
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = modifier,
         contentScale = ContentScale.Fit
     )
+
 }
 
 // 비디오 플레이어, 최초 1회 자동재생, 재생 버튼 가림
