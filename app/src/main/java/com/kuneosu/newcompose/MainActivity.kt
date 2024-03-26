@@ -240,7 +240,7 @@ fun NewTabRow() {
             Tab(
                 modifier = Modifier
                     .background(Color.Black)
-                    .padding(horizontal = 0.dp),
+                    .padding(horizontal = 0.dp, vertical = 5.dp),
                 selected = selected,
                 onClick = {
                     coroutineScope.launch {
