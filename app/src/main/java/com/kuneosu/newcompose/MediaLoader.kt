@@ -48,10 +48,10 @@ fun GifImage(source: Int) {
         ImageRequest.Builder(LocalContext.current).data(data = source)
             .apply(block = fun ImageRequest.Builder.() {
                 // image 불러오는 동안 출력할 이미지
-                placeholder(R.drawable.ic_launcher_foreground)
+                placeholder(R.drawable.logo_square)
                 // image 를 불러오는데 실패했을 때 표시할 이미지
                 error(R.drawable.ic_launcher_background)
-            }).repeatCount(0).build(), imageLoader = imageLoader
+            }).repeatCount(0).build(), imageLoader = imageLoader,
     )
 
     // image 설정

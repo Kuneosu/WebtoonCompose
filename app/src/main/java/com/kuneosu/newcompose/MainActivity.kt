@@ -3,6 +3,7 @@ package com.kuneosu.newcompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,18 +36,21 @@ import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             NewComposeTheme {
                 val navController = rememberNavController()
 
-                NavHost(navController = navController,
-                    startDestination = "splash_screen"){
+                NavHost(
+                    navController = navController,
+                    startDestination = "splash_screen"
+                ) {
 
-                    composable("splash_screen"){
+                    composable("splash_screen") {
                         SplashScreen(navController)
                     }
 
-                    composable("main_screen"){
+                    composable("main_screen") {
                         MainScreen()
                     }
                 }
@@ -59,6 +63,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 internal fun MainScreen(
 ) {
+
+
     val state = rememberCollapsingToolbarScaffoldState()
 
     CollapsingToolbarScaffold(
@@ -86,7 +92,7 @@ fun MainTabRow() {
     ScrollableTabRow(
         selectedTabIndex = pagerState.currentPage,
         backgroundColor = Color.Black,
-        edgePadding = deviceWidth/3,
+        edgePadding = deviceWidth / 3,
         indicator = {
             TabRowDefaults.Indicator(
                 modifier = Modifier
@@ -191,7 +197,7 @@ fun MainTabRow() {
 fun MainContent() {
     val toonList = DataProvider.toonList
     Column {
-        MainTabRow()
+        NewTabRow()
     }
 }
 
@@ -203,5 +209,116 @@ fun Preview() {
 
         MainScreen()
 
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
+@Composable
+fun NewTabRow() {
+    val pages = listOf("지금 핫한", "오늘 연재무료", "실시간 랭킹", "오늘 뭐볼까?")
+    val pagerState = rememberPagerState(initialPage = pages.size / 2)
+    val newPagerState = androidx.compose.foundation.pager.rememberPagerState(
+        initialPage = pages.size / 2
+    ) {
+        pages.size
+    }
+
+
+    val coroutineScope = rememberCoroutineScope()
+    val deviceWidth = LocalConfiguration.current.screenWidthDp.dp
+
+    ScrollableTabRow(
+        selectedTabIndex = newPagerState.currentPage,
+        backgroundColor = Color.Black,
+        edgePadding = deviceWidth / 3,
+    ) {
+        pages.forEachIndexed { index, text ->
+            val selected = newPagerState.currentPage == index
+            Tab(
+                modifier = Modifier
+                    .background(Color.Black)
+                    .padding(horizontal = 0.dp),
+                selected = selected,
+                onClick = {
+                    coroutineScope.launch {
+                        newPagerState.animateScrollToPage(index)
+                    }
+                },
+                text = {
+                    if (index == newPagerState.currentPage) {
+                        when (index) {
+                            0 -> {
+                                GradientAnimationButton(
+                                    text = text,
+                                    startColor = Color(156, 39, 176, 255),
+                                    endColor = Color(0, 188, 212, 255)
+                                )
+                            }
+
+                            1 -> {
+                                GradientAnimationButton(
+                                    text = text,
+                                    startColor = Color(255, 193, 7, 255),
+                                    endColor = Color(14, 228, 255, 255)
+                                )
+                            }
+
+                            2 -> {
+                                GradientAnimationButton(
+                                    text = text,
+                                    startColor = Color(255, 235, 59, 255),
+                                    endColor = Color(233, 30, 99, 255)
+                                )
+                            }
+
+                            else -> {
+                                GradientAnimationButton(
+                                    text = text,
+                                    startColor = Color(137, 255, 0, 255),
+                                    endColor = Color(0, 188, 212, 255)
+                                )
+                            }
+                        }
+
+                    } else {
+                        GradientAnimationButton(
+                            text = text,
+                            startColor = Color(60, 60, 60, 255),
+                            endColor = Color(60, 60, 60, 255)
+                        )
+                    }
+
+
+                }
+            )
+        }
+    }
+
+    androidx.compose.foundation.pager.HorizontalPager(
+        beyondBoundsPageCount = 3,
+        state = newPagerState,
+        verticalAlignment = Alignment.CenterVertically,
+    ) { page ->
+        when (page) {
+            0 -> {
+                MakeSevenToons(toons = DataProvider.toonList2)
+
+            }
+
+            1 -> {
+                MakeSevenToons(toons = DataProvider.toonList)
+
+            }
+
+            2 -> {
+                MakeSevenToons(toons = DataProvider.toonList2)
+
+            }
+
+            else -> {
+                MakeSevenToons(toons = DataProvider.toonList)
+
+            }
+        }
     }
 }

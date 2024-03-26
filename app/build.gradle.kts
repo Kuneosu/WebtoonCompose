@@ -70,6 +70,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("com.google.accompanist:accompanist-pager:0.20.1")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.20.1")
+    implementation("androidx.compose.foundation:foundation:1.6.4")
+
     implementation(libs.androidx.ui.test.junit4)
     implementation(libs.volley)
     testImplementation(libs.junit)
