@@ -78,7 +78,7 @@ fun ToonScreen(
                     source = toonMainGif,
                     modifier = Modifier
                         .size(deviceWidth)
-                        .padding(30.dp)
+                        .padding(20.dp),
                 )
             } else {
                 Image(
@@ -86,8 +86,8 @@ fun ToonScreen(
                     contentDescription = "",
                     modifier = Modifier
                         .size(deviceWidth)
-                        .padding(30.dp),
-                    contentScale = ContentScale.Crop
+                        .padding(20.dp),
+                    contentScale = ContentScale.Fit
                 )
             }
 

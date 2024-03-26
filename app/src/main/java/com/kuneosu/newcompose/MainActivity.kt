@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -64,7 +65,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 internal fun MainScreen(
 ) {
-
+    val activity = LocalContext.current as MainActivity
+    val backPressedCallback = BackPressedCallBack(activity)
+    activity.onBackPressedDispatcher.addCallback(activity, backPressedCallback.callback)
 
     val state = rememberCollapsingToolbarScaffoldState()
 
