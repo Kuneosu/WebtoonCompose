@@ -31,7 +31,7 @@ import coil.request.repeatCount
 
 // GIF 이미지 로더
 @Composable
-fun GifImage(source: Int,modifier: Modifier) {
+fun GifImage(source: Int,modifier: Modifier, contentScale: ContentScale = ContentScale.Fit) {
     val context = LocalContext.current
     val imageLoader = coil.ImageLoader.Builder(context)
         .components {
@@ -59,7 +59,7 @@ fun GifImage(source: Int,modifier: Modifier) {
         painter = painter,
         contentDescription = "",
         modifier = modifier,
-        contentScale = ContentScale.Fit
+        contentScale = contentScale
     )
 
 }
