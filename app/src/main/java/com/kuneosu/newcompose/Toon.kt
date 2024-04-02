@@ -7,6 +7,5 @@ data class Toon(
     val subTitle: String? = null,
     val mainImage: Int? = null,
     val backgroundImage: Int,
-    val mainColor: Color,
     val mainGIF: Int? = null,
 )

@@ -2,26 +2,35 @@ package com.kuneosu.newcompose
 
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.red
+import androidx.core.graphics.toColor
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import androidx.palette.graphics.Palette
+import androidx.palette.graphics.get
+import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
@@ -31,7 +40,7 @@ import coil.request.repeatCount
 
 // GIF 이미지 로더
 @Composable
-fun GifImage(source: Int,modifier: Modifier, contentScale: ContentScale = ContentScale.Fit) {
+fun GifImage(source: Int, modifier: Modifier, contentScale: ContentScale = ContentScale.Fit) {
     val context = LocalContext.current
     val imageLoader = coil.ImageLoader.Builder(context)
         .components {
@@ -44,14 +53,15 @@ fun GifImage(source: Int,modifier: Modifier, contentScale: ContentScale = Conten
         .build()
 
     val painter = rememberAsyncImagePainter(
-        // data = 불러올 이미지
-        ImageRequest.Builder(LocalContext.current).data(data = source)
+        model = ImageRequest.Builder(LocalContext.current).data(data = source)
             .apply(block = fun ImageRequest.Builder.() {
                 // image 불러오는 동안 출력할 이미지
                 placeholder(R.drawable.logo_square)
                 // image 를 불러오는데 실패했을 때 표시할 이미지
-                error(R.drawable.ic_launcher_background)
-            }).repeatCount(0).build(), imageLoader = imageLoader,
+                error(R.drawable.logo_square)
+            }).repeatCount(0).build(),
+        // data = 불러올 이미지
+        imageLoader = imageLoader,
     )
 
     // image 설정
@@ -59,7 +69,7 @@ fun GifImage(source: Int,modifier: Modifier, contentScale: ContentScale = Conten
         painter = painter,
         contentDescription = "",
         modifier = modifier,
-        contentScale = contentScale
+        contentScale = contentScale,
     )
 
 }

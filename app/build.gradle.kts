@@ -71,9 +71,12 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.20.1")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.20.1")
     implementation("androidx.compose.foundation:foundation:1.6.4")
+    implementation("com.google.mlkit:text-recognition-korean:16.0.0")
+
 
     implementation(libs.androidx.ui.test.junit4)
     implementation(libs.volley)
+    implementation(libs.androidx.palette.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

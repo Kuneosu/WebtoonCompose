@@ -1,6 +1,7 @@
 package com.kuneosu.newcompose
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.palette.graphics.Palette
 
 @Composable
 fun MakeSevenToons(toons: List<Toon>) {
@@ -104,8 +106,13 @@ fun SmallToonCard(toon: Toon) {
                 contentScale = ContentScale.Crop
             )
 
+
+            // Masking with gradient
+            val toonBitmap = BitmapFactory.decodeResource(context.resources, toon.backgroundImage)
+            val mainColor = Palette.from(toonBitmap).generate().dominantSwatch?.rgb
+
             val gradient = Brush.verticalGradient(
-                colors = listOf(toon.mainColor, Color(255, 255, 255, 0)),
+                colors = listOf(Color(mainColor!!), Color(0, 0, 0, 0)),
                 startY = 650f, 300f,
             )
             Box(
@@ -174,9 +181,12 @@ fun BigToonCard(toon: Toon) {
                 )
             }
 
+            // Masking with gradient
+            val toonBitmap = BitmapFactory.decodeResource(context.resources, toon.backgroundImage)
+            val mainColor = Palette.from(toonBitmap).generate().dominantSwatch?.rgb
 
             val gradient = Brush.verticalGradient(
-                colors = listOf(toon.mainColor, Color(255, 255, 255, 0)),
+                colors = listOf(Color(mainColor!!), Color(255, 255, 255, 0)),
                 startY = 650f, 300f,
             )
             Box(
@@ -190,7 +200,7 @@ fun BigToonCard(toon: Toon) {
                 ) {
                     Image(
                         painter = painterResource(id = toon.titleImage),
-                        contentDescription = "",
+                        contentDescription = null,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
                             .padding(bottom = 6.dp)
@@ -208,40 +218,6 @@ fun BigToonCard(toon: Toon) {
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun ToonMask(toon: Toon) {
-    val gradient = Brush.verticalGradient(
-        colors = listOf(toon.mainColor, Color(255, 255, 255, 0)),
-        startY = 650f, 300f,
-    )
-    Box(
-        modifier = Modifier
-            .background(gradient)
-            .fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter,
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = toon.titleImage),
-                contentDescription = "",
-                modifier = Modifier
-                    .padding(bottom = 6.dp)
-
-            )
-            Text(
-                text = toon.subTitle.toString(),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.LightGray,
-                modifier = Modifier
-                    .padding(bottom = 26.dp)
-            )
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.kuneosu.newcompose
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -41,6 +43,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -49,9 +52,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.toColor
 import androidx.core.graphics.toColorInt
 import androidx.core.graphics.toColorLong
+import androidx.palette.graphics.Palette
+import coil.Coil
+import coil.compose.AsyncImagePainter
 import com.kuneosu.newcompose.ui.theme.NewComposeTheme
 import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
@@ -99,6 +107,7 @@ fun ToonScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        // Background
         Image(
             painter = painterResource(id = toonBackground),
             contentDescription = "",
@@ -177,12 +186,13 @@ fun ToonScreenTopBar(
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ToonScreenTabRow() {
     val scrollState = rememberScrollState()
     val pages = listOf("첫 화 보기", "회차", "정보", "이용권", "댓글")
-    val pagerState = androidx.compose.foundation.pager.rememberPagerState() {
+    val pagerState = androidx.compose.foundation.pager.rememberPagerState {
         pages.size
     }
 
@@ -241,8 +251,10 @@ fun ToonScreenTabRow() {
                             .height(900.dp)
                             .background(Color.Red)
                             .verticalScroll(scrollState)
-                    )
+                    ) {
+                    }
                 }
+
                 1 -> {
                     Box(
                         modifier = Modifier
@@ -252,6 +264,7 @@ fun ToonScreenTabRow() {
                             .verticalScroll(scrollState)
                     )
                 }
+
                 2 -> {
                     Box(
                         modifier = Modifier
@@ -261,6 +274,7 @@ fun ToonScreenTabRow() {
                             .verticalScroll(scrollState)
                     )
                 }
+
                 3 -> {
                     Box(
                         modifier = Modifier
@@ -270,6 +284,7 @@ fun ToonScreenTabRow() {
                             .verticalScroll(scrollState)
                     )
                 }
+
                 4 -> {
                     Box(
                         modifier = Modifier
