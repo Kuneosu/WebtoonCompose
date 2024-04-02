@@ -1,36 +1,11 @@
 package com.kuneosu.newcompose
 
-import android.net.Uri
 import android.os.Build
-import android.util.Log
-import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.red
-import androidx.core.graphics.toColor
-import androidx.media3.common.MediaItem
-import androidx.media3.common.util.UnstableApi
-import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.ui.PlayerView
-import androidx.palette.graphics.Palette
-import androidx.palette.graphics.get
-import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
@@ -74,49 +49,47 @@ fun GifImage(source: Int, modifier: Modifier, contentScale: ContentScale = Conte
 
 }
 
-// 비디오 플레이어, 최초 1회 자동재생, 재생 버튼 가림
-@OptIn(UnstableApi::class)
-@Composable
-fun VideoPlayer() {
-    val context = LocalContext.current
-    // ExoPlayer 객체 생성
-    val exoPlayer = ExoPlayer.Builder(context).build()
-    val video =
-        "https://kr-a.kakaopagecdn.com/P/C/2320/c1a/78363bcd-eec2-4d43-8045-c1f732ad87a1.webm"
-    val videoUri = Uri.parse(video)
-    // source 설정
-    val mediaSource = remember {
-        MediaItem.Builder()
-            .setUri(videoUri)
-            .build()
-    }
-    // mediaSource 가 실행되었을때
-    LaunchedEffect(mediaSource) {
-        exoPlayer.setMediaItem(mediaSource)
-        exoPlayer.prepare()
-        // 자동으로 재생
-        exoPlayer.play()
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            exoPlayer.release()
-        }
-    }
-
-    AndroidView(
-        factory = { ctx ->
-            PlayerView(ctx).apply {
-                player = exoPlayer
-                // 재생 버튼 등 기타 메뉴 제거
-                useController = false
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-            .background(Color.White),
-    )
-
-
-}
+// 비디오 플레이어, 최초 1회 자동 재생, 재생 버튼 가림
+//@OptIn(UnstableApi::class)
+//@Composable
+//fun VideoPlayer() {
+//    val context = LocalContext.current
+//    // ExoPlayer 객체 생성
+//    val exoPlayer = ExoPlayer.Builder(context).build()
+//    val video =
+//        "https://kr-a.kakaopagecdn.com/P/C/2320/c1a/78363bcd-eec2-4d43-8045-c1f732ad87a1.webm"
+//    val videoUri = Uri.parse(video)
+//    // source 설정
+//    val mediaSource = remember {
+//        MediaItem.Builder()
+//            .setUri(videoUri)
+//            .build()
+//    }
+//    // mediaSource 가 실행되었을때
+//    LaunchedEffect(mediaSource) {
+//        exoPlayer.setMediaItem(mediaSource)
+//        exoPlayer.prepare()
+//        // 자동으로 재생
+//        exoPlayer.play()
+//    }
+//
+//    DisposableEffect(Unit) {
+//        onDispose {
+//            exoPlayer.release()
+//        }
+//    }
+//
+//    AndroidView(
+//        factory = { ctx ->
+//            PlayerView(ctx).apply {
+//                player = exoPlayer
+//                // 재생 버튼 등 기타 메뉴 제거
+//                useController = false
+//            }
+//        },
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .height(200.dp)
+//            .background(Color.White),
+//    )
+//}

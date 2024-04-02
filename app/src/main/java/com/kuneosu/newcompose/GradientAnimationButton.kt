@@ -6,18 +6,13 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -78,27 +73,27 @@ fun GradientAnimationButton(text: String, startColor: Color, endColor: Color) {
 //                    Brush.horizontalGradient(listOf(Color(0xFF28D8A3), Color(0xFF00BEB2)))
 // - modifier : 버튼의 형태를 설정하는 Modifier 객체
 // - onClick : 버튼 클릭 이벤트
-@Composable
-fun GradientButton(
-    text: String,
-    gradient: Brush,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit = { },
-) {
-    Button(
-        modifier = modifier,
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-        contentPadding = PaddingValues(),
-        onClick = { onClick() },
-    ) {
-        Box(
-            modifier = Modifier
-                .background(gradient)
-                .then(modifier),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(text = text)
-        }
-    }
-}
+//@Composable
+//fun GradientButton(
+//    text: String,
+//    gradient: Brush,
+//    modifier: Modifier = Modifier,
+//    onClick: () -> Unit = { },
+//) {
+//    Button(
+//        modifier = modifier,
+//        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+//        contentPadding = PaddingValues(),
+//        onClick = { onClick() },
+//    ) {
+//        Box(
+//            modifier = Modifier
+//                .background(gradient)
+//                .then(modifier),
+//            contentAlignment = Alignment.Center,
+//        ) {
+//            Text(text = text)
+//        }
+//    }
+//}
 

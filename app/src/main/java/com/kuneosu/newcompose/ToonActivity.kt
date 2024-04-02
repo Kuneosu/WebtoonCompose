@@ -1,7 +1,9 @@
 package com.kuneosu.newcompose
 
-import android.graphics.Bitmap
+import android.content.ContentResolver
+import android.content.Context
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +13,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,43 +23,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.drawable.toDrawable
-import androidx.core.graphics.toColor
-import androidx.core.graphics.toColorInt
-import androidx.core.graphics.toColorLong
 import androidx.palette.graphics.Palette
-import coil.Coil
-import coil.compose.AsyncImagePainter
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.kuneosu.newcompose.ui.theme.NewComposeTheme
 import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
@@ -74,17 +64,20 @@ class ToonActivity : ComponentActivity() {
         setContent {
             NewComposeTheme {
                 val toonBackground = intent.getIntExtra("toon_background", 0)
+                val toonTitle = intent.getIntExtra("toon_title", 0)
                 if (intent.hasExtra("toon_main_gif")) {
                     val toonMainGif = intent.getIntExtra("toon_main_gif", 0)
                     ToonScreen(
                         toonBackground = toonBackground,
                         toonMainGif = toonMainGif,
+                        toonTitle = toonTitle
                     )
                 } else if (intent.hasExtra("toon_main_image")) {
                     val toonMainImage = intent.getIntExtra("toon_main_image", 0)
                     ToonScreen(
                         toonBackground = toonBackground,
                         toonMainImage = toonMainImage,
+                        toonTitle = toonTitle
                     )
                 } else {
                     finish()
@@ -100,9 +93,9 @@ fun ToonScreen(
     toonBackground: Int,
     toonMainGif: Int? = null,
     toonMainImage: Int? = null,
+    toonTitle: Int
 ) {
 
-    val scrollState = rememberScrollState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -116,6 +109,7 @@ fun ToonScreen(
         )
 
         val state = rememberCollapsingToolbarScaffoldState()
+        val mainColor = mainColor(LocalContext.current, toonBackground)
 
         CollapsingToolbarScaffold(
             modifier = Modifier
@@ -124,22 +118,25 @@ fun ToonScreen(
             scrollStrategy = ScrollStrategy.EnterAlways,
             toolbar = {
                 ToonScreenTopBar(
+                    mainColor = mainColor,
                     toonMainGif = toonMainGif,
                     toonMainImage = toonMainImage,
+                    toonTitle = toonTitle
                 )
             },
         ) {
-            ToonScreenTabRow()
+            ToonScreenTabRow(mainColor = mainColor)
         }
     }
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToonScreenTopBar(
+    mainColor: Int,
     toonMainGif: Int? = null,
     toonMainImage: Int? = null,
+    toonTitle: Int
 ) {
     val deviceWidth = LocalConfiguration.current.screenWidthDp.dp
     Column(
@@ -173,13 +170,19 @@ fun ToonScreenTopBar(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "뒤끝작렬",
-                style = MaterialTheme.typography.headlineSmall,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+            val gradient = Brush.verticalGradient(
+                colors = listOf(Color(mainColor), Color(0, 0, 0, 0)),
+                startY = 100f, 0f,
             )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(gradient),
+                contentAlignment = Alignment.Center
+            ) {
+                GetTitle(context = LocalContext.current, toonTitle = toonTitle)
+            }
 
         }
     }
@@ -189,7 +192,7 @@ fun ToonScreenTopBar(
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ToonScreenTabRow() {
+fun ToonScreenTabRow(mainColor: Int) {
     val scrollState = rememberScrollState()
     val pages = listOf("첫 화 보기", "회차", "정보", "이용권", "댓글")
     val pagerState = androidx.compose.foundation.pager.rememberPagerState {
@@ -198,18 +201,27 @@ fun ToonScreenTabRow() {
 
 
     val coroutineScope = rememberCoroutineScope()
-    val deviceWidth = LocalConfiguration.current.screenWidthDp.dp
-    Column {
+
+    Column(
+        modifier = Modifier
+            .background(Color(mainColor))
+            .fillMaxSize()
+    ) {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
-            backgroundColor = Color.Black,
+            backgroundColor = Color(mainColor),
+            indicator = { tabPositions ->
+                TabRowDefaults.Indicator(
+                    modifier = Modifier
+                        .tabIndicatorOffset(tabPositions[pagerState.currentPage])
+                        .padding(vertical = 5.dp),
+                    color = Color.White
+                )
+            },
         ) {
             pages.forEachIndexed { index, text ->
                 val selected = pagerState.currentPage == index
                 Tab(
-                    modifier = Modifier
-                        .background(Color.Black)
-                        .padding(horizontal = 0.dp, vertical = 5.dp),
                     selected = selected,
                     onClick = {
                         coroutineScope.launch {
@@ -221,14 +233,14 @@ fun ToonScreenTabRow() {
                             Text(
                                 text = text,
                                 color = Color.White,
-                                fontSize = 16.sp,
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         } else {
                             Text(
                                 text = text,
-                                color = Color.LightGray,
-                                fontSize = 16.sp,
+                                color = Color(255, 255, 255, 150),
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -252,6 +264,7 @@ fun ToonScreenTabRow() {
                             .background(Color.Red)
                             .verticalScroll(scrollState)
                     ) {
+
                     }
                 }
 
@@ -301,3 +314,48 @@ fun ToonScreenTabRow() {
 
 }
 
+@Composable
+fun GetTitle(context: Context, toonTitle: Int) {
+
+    val imageUri = Uri.Builder()
+        .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
+        .authority(context.resources.getResourcePackageName(toonTitle))
+        .appendPath(context.resources.getResourceTypeName(toonTitle))
+        .appendPath(context.resources.getResourceEntryName(toonTitle))
+        .build()
+
+    val image = InputImage.fromFilePath(context, imageUri)
+    var recognizedText by remember {
+        mutableStateOf("")
+    }
+    val recognizer = TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+    recognizer.process(image)
+        .addOnSuccessListener {
+            val result = it.text
+            Log.d("ToonScreenTabRow", "Text recognition success: $result")
+            recognizedText = result
+
+        }
+        .addOnFailureListener {
+            Log.e("ToonScreenTabRow", "Text recognition failed")
+        }
+    Log.d("ToonScreenTabRow", "GetTitle: $recognizedText")
+    AddTitle(title = recognizedText.replace("\n", " "))
+}
+
+@Composable
+fun AddTitle(title: String) {
+    Text(
+        text = title,
+        color = Color.White,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(20.dp)
+    )
+}
+
+fun mainColor(context: Context, background: Int): Int {
+    val toonBitmap = BitmapFactory.decodeResource(context.resources, background)
+    val mainColor = Palette.from(toonBitmap).generate().dominantSwatch?.rgb
+    return mainColor!!
+}

@@ -1,7 +1,5 @@
 package com.kuneosu.newcompose
 
-import androidx.compose.ui.graphics.Color
-
 object DataProvider {
     val toonList = listOf(
         Toon(

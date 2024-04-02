@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 
+@Suppress("DEPRECATION")
 class BackPressedCallBack(private var activity: Activity) {
     private var isDouble = false
 
