@@ -223,6 +223,7 @@ fun ToonScreenTabRow(mainColor: Int) {
                 val selected = pagerState.currentPage == index
                 Tab(
                     selected = selected,
+                    selectedContentColor = Color.Transparent,
                     onClick = {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(index)
