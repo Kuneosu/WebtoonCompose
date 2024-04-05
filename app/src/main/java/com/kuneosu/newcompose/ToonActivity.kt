@@ -1,5 +1,6 @@
 package com.kuneosu.newcompose
 
+import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.BitmapFactory
@@ -7,11 +8,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,11 +27,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Tab
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TabRow
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.material3.Divider
-import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,6 +53,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.palette.graphics.Palette
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -107,7 +115,7 @@ fun ToonScreen(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-
+        val scrollState = rememberScrollState()
         val state = rememberCollapsingToolbarScaffoldState()
         val mainColor = mainColor(LocalContext.current, toonBackground)
 
@@ -125,7 +133,8 @@ fun ToonScreen(
                 )
             },
         ) {
-            ToonScreenTabRow(mainColor = mainColor)
+            ToonScreenTabRow(mainColor = mainColor, scrollState = scrollState)
+
         }
     }
 }
@@ -138,31 +147,11 @@ fun ToonScreenTopBar(
     toonMainImage: Int? = null,
     toonTitle: Int
 ) {
-    val deviceWidth = LocalConfiguration.current.screenWidthDp.dp
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Box(modifier = Modifier.fillMaxWidth()) {
-            if (toonMainGif != null) {
-                GifImage(
-                    source = toonMainGif,
-                    modifier = Modifier
-                        .size(deviceWidth)
-                        .padding(top = 20.dp, start = 20.dp, end = 20.dp),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Image(
-                    painter = painterResource(id = toonMainImage!!),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(deviceWidth)
-                        .padding(top = 20.dp, start = 20.dp, end = 20.dp),
-                    contentScale = ContentScale.Crop
-                )
-            }
-        }
-        Divider(color = Color.White, thickness = 0.5.dp)
+        MainImage(toonMainGif = toonMainGif, toonMainImage = toonMainImage)
+        HorizontalDivider(thickness = 0.5.dp, color = Color.White)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -192,13 +181,11 @@ fun ToonScreenTopBar(
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ToonScreenTabRow(mainColor: Int) {
-    val scrollState = rememberScrollState()
+fun ToonScreenTabRow(mainColor: Int, scrollState: ScrollState) {
     val pages = listOf("첫 화 보기", "회차", "정보", "이용권", "댓글")
     val pagerState = androidx.compose.foundation.pager.rememberPagerState {
         pages.size
     }
-
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -211,7 +198,7 @@ fun ToonScreenTabRow(mainColor: Int) {
             selectedTabIndex = pagerState.currentPage,
             backgroundColor = Color(mainColor),
             indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
+                SecondaryIndicator(
                     modifier = Modifier
                         .tabIndicatorOffset(tabPositions[pagerState.currentPage])
                         .padding(vertical = 5.dp),
@@ -260,12 +247,11 @@ fun ToonScreenTabRow(mainColor: Int) {
                 0 -> {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .height(900.dp)
-                            .background(Color.Red)
+                            .fillMaxSize()
+                            .background(Color(mainColor))
                             .verticalScroll(scrollState)
                     ) {
-
+                        FirstToonPage()
                     }
                 }
 
@@ -353,6 +339,54 @@ fun AddTitle(title: String) {
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(20.dp)
     )
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun FirstToonPage() {
+
+
+    AndroidView(
+        factory = { context ->
+            WebView(context).apply {
+                settings.javaScriptEnabled = true
+                webViewClient = WebViewClient()
+
+                settings.loadWithOverviewMode = true
+                settings.useWideViewPort = true
+                settings.setSupportZoom(true)
+            }
+        },
+        update = { webView ->
+            webView.loadUrl("https://webtoon.kakao.com/viewer/%EB%92%A4%EB%81%9D%EC%9E%91%EB%A0%AC-001/149163")
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 5.dp)
+    )
+}
+
+@Composable
+fun MainImage(toonMainGif: Int?, toonMainImage: Int?) {
+    val deviceWidth = LocalConfiguration.current.screenWidthDp.dp
+    if (toonMainGif != null) {
+        GifImage(
+            source = toonMainGif,
+            modifier = Modifier
+                .size(deviceWidth)
+                .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+            contentScale = ContentScale.Crop,
+        )
+    } else {
+        Image(
+            painter = painterResource(id = toonMainImage!!),
+            contentDescription = "",
+            modifier = Modifier
+                .size(deviceWidth)
+                .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+            contentScale = ContentScale.Crop
+        )
+    }
 }
 
 fun mainColor(context: Context, background: Int): Int {
