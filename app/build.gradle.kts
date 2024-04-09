@@ -70,6 +70,9 @@ dependencies {
     implementation(libs.accompanist.pager.indicators)
     implementation(libs.androidx.foundation)
     implementation(libs.text.recognition.korean)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
 
 
     implementation(libs.androidx.ui.test.junit4)

@@ -12,6 +12,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -71,25 +72,26 @@ class ToonActivity : ComponentActivity() {
 
         setContent {
             NewComposeTheme {
-                val toonBackground = intent.getIntExtra("toon_background", 0)
-                val toonTitle = intent.getIntExtra("toon_title", 0)
-                if (intent.hasExtra("toon_main_gif")) {
-                    val toonMainGif = intent.getIntExtra("toon_main_gif", 0)
-                    ToonScreen(
-                        toonBackground = toonBackground,
-                        toonMainGif = toonMainGif,
-                        toonTitle = toonTitle
-                    )
-                } else if (intent.hasExtra("toon_main_image")) {
-                    val toonMainImage = intent.getIntExtra("toon_main_image", 0)
-                    ToonScreen(
-                        toonBackground = toonBackground,
-                        toonMainImage = toonMainImage,
-                        toonTitle = toonTitle
-                    )
-                } else {
-                    finish()
-                }
+                FirstToonPage()
+//                val toonBackground = intent.getIntExtra("toon_background", 0)
+//                val toonTitle = intent.getIntExtra("toon_title", 0)
+//                if (intent.hasExtra("toon_main_gif")) {
+//                    val toonMainGif = intent.getIntExtra("toon_main_gif", 0)
+//                    ToonScreen(
+//                        toonBackground = toonBackground,
+//                        toonMainGif = toonMainGif,
+//                        toonTitle = toonTitle
+//                    )
+//                } else if (intent.hasExtra("toon_main_image")) {
+//                    val toonMainImage = intent.getIntExtra("toon_main_image", 0)
+//                    ToonScreen(
+//                        toonBackground = toonBackground,
+//                        toonMainImage = toonMainImage,
+//                        toonTitle = toonTitle
+//                    )
+//                } else {
+//                    finish()
+//                }
             }
         }
     }
@@ -262,7 +264,9 @@ fun ToonScreenTabRow(mainColor: Int, scrollState: ScrollState) {
                             .height(900.dp)
                             .background(Color.Green)
                             .verticalScroll(scrollState)
-                    )
+                    ) {
+//                        GifImage(source = "https://media.itsnicethat.com/original_images/giphy-2021-gifs-and-clips-animation-itsnicethat-02.gif", modifier = Modifier.fillMaxSize())
+                    }
                 }
 
                 2 -> {
@@ -358,11 +362,11 @@ fun FirstToonPage() {
             }
         },
         update = { webView ->
-            webView.loadUrl("https://webtoon.kakao.com/viewer/%EB%92%A4%EB%81%9D%EC%9E%91%EB%A0%AC-001/149163")
+            webView.loadUrl("https://webtoon.kakao.com/content/%EB%82%98-%ED%98%BC%EC%9E%90%EB%A7%8C-%EB%A0%88%EB%B2%A8%EC%97%85/2320")
         },
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 5.dp)
+
     )
 }
 

@@ -34,7 +34,7 @@ fun GifImage(source: Int, modifier: Modifier, contentScale: ContentScale = Conte
                 placeholder(R.drawable.logo_square)
                 // image 를 불러오는데 실패했을 때 표시할 이미지
                 error(R.drawable.logo_square)
-            }).repeatCount(0).build(),
+            }).repeatCount(-1).build(),
         // data = 불러올 이미지
         imageLoader = imageLoader,
     )

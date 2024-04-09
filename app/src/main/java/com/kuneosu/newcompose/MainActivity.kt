@@ -1,6 +1,7 @@
 package com.kuneosu.newcompose
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -22,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kuneosu.newcompose.data.data_source.RemoteDataSource
 import com.kuneosu.newcompose.ui.theme.NewComposeTheme
 import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
@@ -64,6 +66,9 @@ internal fun MainScreen(
     activity.onBackPressedDispatcher.addCallback(activity, backPressedCallback.callback)
 
     val state = rememberCollapsingToolbarScaffoldState()
+
+    val toons = RemoteDataSource().getToons()
+    Log.d("REMOTE DATA SOURCE", "MainScreen: $toons")
 
     CollapsingToolbarScaffold(
         modifier = Modifier
@@ -215,9 +220,8 @@ fun MainTabRow() {
     val pages = listOf("지금 핫한", "오늘 연재무료", "실시간 랭킹", "오늘 뭐볼까?")
     val pagerState = androidx.compose.foundation.pager.rememberPagerState(
         initialPage = pages.size / 2
-    ) {
-        pages.size
-    }
+        , pageCount = { pages.size }
+    )
 
 
     val coroutineScope = rememberCoroutineScope()
