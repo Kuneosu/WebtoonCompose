@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
+    implementation("com.github.MahboubehSeyedpour:jetpack-loading:1.1.0")
+
 
 
     implementation(libs.androidx.ui.test.junit4)

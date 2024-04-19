@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.palette.graphics.Palette
 import com.kuneosu.newcompose.data.model.Toon
+import com.kuneosu.newcompose.util.GifImage
 
 @Composable
 fun MakeSevenToons(toons: List<Toon>) {

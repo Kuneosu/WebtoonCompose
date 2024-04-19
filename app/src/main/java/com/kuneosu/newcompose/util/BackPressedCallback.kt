@@ -1,4 +1,4 @@
-package com.kuneosu.newcompose
+package com.kuneosu.newcompose.util
 
 import android.app.Activity
 import android.os.Handler

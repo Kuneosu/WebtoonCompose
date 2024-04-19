@@ -1,4 +1,4 @@
-package com.kuneosu.newcompose.ui
+package com.kuneosu.newcompose.util
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat

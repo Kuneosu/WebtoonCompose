@@ -10,21 +10,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import com.kuneosu.newcompose.R
+import com.kuneosu.newcompose.util.GifImage
 import kotlinx.coroutines.delay
+
 
 @Composable
 fun SplashScreen(navController: NavController) {
+
     LaunchedEffect(key1 = true) {
-
-        delay(200)
-
-        navController.navigate("main_screen") {
-            popUpTo("splash_screen") {
-                inclusive = true
-            }
-        }
+        delay(2000)
+        navController.navigate("main_screen")
     }
 
+    SplashLogo()
+}
+
+@Composable
+fun SplashLogo() {
     Box(
         modifier =
         Modifier
@@ -34,6 +36,4 @@ fun SplashScreen(navController: NavController) {
     ) {
         GifImage(source = R.drawable.splash, modifier = Modifier.fillMaxSize(), repeat = 0)
     }
-
-
 }

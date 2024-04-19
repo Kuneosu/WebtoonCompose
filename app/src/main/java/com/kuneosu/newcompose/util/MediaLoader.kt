@@ -1,4 +1,4 @@
-package com.kuneosu.newcompose.ui
+package com.kuneosu.newcompose.util
 
 import android.os.Build
 import androidx.compose.foundation.Image
@@ -16,7 +16,12 @@ import com.kuneosu.newcompose.R
 
 // GIF 이미지 로더
 @Composable
-fun GifImage(source: Int, modifier: Modifier, contentScale: ContentScale = ContentScale.Fit,repeat: Int=-1) {
+fun GifImage(
+    source: Int,
+    modifier: Modifier,
+    contentScale: ContentScale = ContentScale.Fit,
+    repeat: Int = -1
+) {
     val context = LocalContext.current
     val imageLoader = coil.ImageLoader.Builder(context)
         .components {
