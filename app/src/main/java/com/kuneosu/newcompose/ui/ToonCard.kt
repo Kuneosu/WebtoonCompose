@@ -1,7 +1,9 @@
-package com.kuneosu.newcompose
+package com.kuneosu.newcompose.ui
 
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.os.Handler
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.palette.graphics.Palette
+import com.kuneosu.newcompose.data.model.Toon
 
 @Composable
 fun MakeSevenToons(toons: List<Toon>) {
@@ -67,6 +70,25 @@ fun OneBigSixSmall(toons: List<Toon>) {
     }
 }
 
+private var isDouble = false
+fun doubleClickChecker(run: () -> Unit) {
+
+
+    when {
+        isDouble -> {
+            Log.d("Double", "Double Click")
+            return
+        }
+    }
+
+    run()
+    isDouble = true
+    Handler().postDelayed({
+        isDouble = false
+    }, 300)
+}
+
+
 @Composable
 fun SmallToonCard(toon: Toon) {
     val context = LocalContext.current
@@ -74,16 +96,20 @@ fun SmallToonCard(toon: Toon) {
     val screenWidth = configuration.screenWidthDp.dp
     val cardWidth = (screenWidth - 9.dp) / 3
 
+
     Card(
         modifier = Modifier
             .size(cardWidth, 280.dp)
             .padding(5.dp)
             .clickable {
-                val intent = Intent(context, ToonActivity::class.java)
-                intent.putExtra("toon_title", toon.titleImage)
-                intent.putExtra("toon_background", toon.backgroundImage)
-                intent.putExtra("toon_main_image", toon.mainImage)
-                context.startActivity(intent)
+                doubleClickChecker {
+                    val intent = Intent(context, ToonActivity::class.java)
+//                    intent.putExtra("toon_title", toon.titleImage)
+//                    intent.putExtra("toon_background", toon.backgroundImage)
+//                    intent.putExtra("toon_main_image", toon.mainImage)
+                    intent.putExtra("toon_url", toon.toonUrl)
+                    context.startActivity(intent)
+                }
             }
     ) {
         Box(
@@ -150,11 +176,14 @@ fun BigToonCard(toon: Toon) {
             .size(cardWidth, 300.dp)
             .padding(5.dp)
             .clickable {
-                val intent = Intent(context, ToonActivity::class.java)
-                intent.putExtra("toon_title", toon.titleImage)
-                intent.putExtra("toon_background", toon.backgroundImage)
-                intent.putExtra("toon_main_gif", toon.mainGIF)
-                context.startActivity(intent)
+                doubleClickChecker {
+                    val intent = Intent(context, ToonActivity::class.java)
+//                    intent.putExtra("toon_title", toon.titleImage)
+//                    intent.putExtra("toon_background", toon.backgroundImage)
+//                    intent.putExtra("toon_main_image", toon.mainImage)
+                    intent.putExtra("toon_url", toon.toonUrl)
+                    context.startActivity(intent)
+                }
             }
     ) {
         Box(

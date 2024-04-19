@@ -1,4 +1,4 @@
-package com.kuneosu.newcompose
+package com.kuneosu.newcompose.ui
 
 import android.os.Build
 import androidx.compose.foundation.Image
@@ -11,11 +11,12 @@ import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.request.ImageRequest
 import coil.request.repeatCount
+import com.kuneosu.newcompose.R
 
 
 // GIF 이미지 로더
 @Composable
-fun GifImage(source: Int, modifier: Modifier, contentScale: ContentScale = ContentScale.Fit) {
+fun GifImage(source: Int, modifier: Modifier, contentScale: ContentScale = ContentScale.Fit,repeat: Int=-1) {
     val context = LocalContext.current
     val imageLoader = coil.ImageLoader.Builder(context)
         .components {
@@ -34,7 +35,7 @@ fun GifImage(source: Int, modifier: Modifier, contentScale: ContentScale = Conte
                 placeholder(R.drawable.logo_square)
                 // image 를 불러오는데 실패했을 때 표시할 이미지
                 error(R.drawable.logo_square)
-            }).repeatCount(-1).build(),
+            }).repeatCount(repeat).build(),
         // data = 불러올 이미지
         imageLoader = imageLoader,
     )

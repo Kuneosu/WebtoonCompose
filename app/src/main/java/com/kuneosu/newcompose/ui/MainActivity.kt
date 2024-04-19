@@ -1,7 +1,6 @@
-package com.kuneosu.newcompose
+package com.kuneosu.newcompose.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -23,7 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kuneosu.newcompose.data.data_source.RemoteDataSource
+import com.kuneosu.newcompose.BackPressedCallBack
+import com.kuneosu.newcompose.data.model.DataProvider
 import com.kuneosu.newcompose.ui.theme.NewComposeTheme
 import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = "main_screen"
+                    startDestination = "splash_screen"
                 ) {
 
                     composable("splash_screen") {
@@ -50,7 +50,6 @@ class MainActivity : ComponentActivity() {
                     composable("main_screen") {
                         MainScreen()
                     }
-
                 }
 
             }
@@ -67,8 +66,6 @@ internal fun MainScreen(
 
     val state = rememberCollapsingToolbarScaffoldState()
 
-    val toons = RemoteDataSource().getToons()
-    Log.d("REMOTE DATA SOURCE", "MainScreen: $toons")
 
     CollapsingToolbarScaffold(
         modifier = Modifier

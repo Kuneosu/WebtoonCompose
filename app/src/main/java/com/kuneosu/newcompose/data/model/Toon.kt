@@ -1,4 +1,4 @@
-package com.kuneosu.newcompose
+package com.kuneosu.newcompose.data.model
 
 data class Toon(
     val titleImage: Int,
@@ -6,4 +6,5 @@ data class Toon(
     val mainImage: Int? = null,
     val backgroundImage: Int,
     val mainGIF: Int? = null,
+    val toonUrl: String,
 )
