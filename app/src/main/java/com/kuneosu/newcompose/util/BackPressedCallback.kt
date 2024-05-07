@@ -6,6 +6,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 
+// 뒤로가기 버튼 2회 클릭 시 종료
+// 사용 기술/지식 : Handler.postDelayed, OnBackPressedCallBack, handleOnBackPressed
 @Suppress("DEPRECATION")
 class BackPressedCallBack(private var activity: Activity) {
     private var isDouble = false

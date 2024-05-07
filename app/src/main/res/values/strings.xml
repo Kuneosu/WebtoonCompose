@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">KAKAO 웹툰 클론</string>
     <string name="text_calendar">캘린더</string>
+    <string name="tab_list_title_1">지금 핫한</string>
+    <string name="tab_list_title_2">오늘 연재무료</string>
+    <string name="tab_list_title_3">실시간 랭킹</string>
+    <string name="tab_list_title_4">오늘 뭐볼까?</string>
+    <string name="menu">Menu</string>
+    <string name="search">Search</string>
+    <string name="mail">Mail</string>
 </resources>

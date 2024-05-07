@@ -15,12 +15,13 @@ import com.kuneosu.newcompose.R
 
 
 // GIF 이미지 로더
+// 사용 기술/지식 : Coil, rememberAsyncImagePainter
 @Composable
 fun GifImage(
     source: Int,
     modifier: Modifier,
     contentScale: ContentScale = ContentScale.Fit,
-    repeat: Int = -1
+    repeat: Int = -1,
 ) {
     val context = LocalContext.current
     val imageLoader = coil.ImageLoader.Builder(context)

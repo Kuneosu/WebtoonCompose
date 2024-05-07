@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.converter.gson)
 
     implementation("com.github.MahboubehSeyedpour:jetpack-loading:1.1.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
 
 

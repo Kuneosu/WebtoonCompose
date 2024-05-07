@@ -9,6 +9,7 @@ import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,7 +24,7 @@ class ToonActivity : ComponentActivity() {
         setContent {
             NewComposeTheme {
                 val toonUrl = intent.getStringExtra("toon_url")
-                FirstToonPage(toonUrl!!)
+                ToonPageWebView(toonUrl!!)
 //                val toonBackground = intent.getIntExtra("toon_background", 0)
 //                val toonTitle = intent.getIntExtra("toon_title", 0)
 //                if (intent.hasExtra("toon_main_gif")) {
@@ -298,26 +299,35 @@ class ToonActivity : ComponentActivity() {
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun FirstToonPage(toonUrl: String) {
+fun ToonPageWebView(toonUrl: String) {
 
+    Box(modifier = Modifier.fillMaxSize()) {
+        AndroidView(
+            factory = { context ->
+                WebView(context).apply {
+                    settings.javaScriptEnabled = true
+                    webViewClient = WebViewClient()
 
-    AndroidView(
-        factory = { context ->
-            WebView(context).apply {
-                settings.javaScriptEnabled = true
-                webViewClient = WebViewClient()
-
-                settings.loadWithOverviewMode = true
-                settings.useWideViewPort = true
-                settings.setSupportZoom(true)
-            }
-        },
-        update = { webView ->
-            webView.loadUrl(toonUrl)
-        },
-        modifier = Modifier
-            .fillMaxSize()
-    )
+                    settings.loadWithOverviewMode = true
+                    settings.useWideViewPort = true
+                    settings.setSupportZoom(true)
+                }
+            },
+            update = { webView ->
+                webView.loadUrl(toonUrl)
+            },
+            modifier = Modifier
+                .fillMaxSize()
+        )
+//        Surface(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(50.dp)
+//                .background(Color.Black),
+//        ) {
+//
+//        }
+    }
 }
 
 //@Composable

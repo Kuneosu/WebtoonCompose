@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.sp
 // - text : 버튼 글자
 // - startColor : 그라데이션 시작 색상
 // - endColor : 그라데이션 종료 색상
+// 사용 기술/지식 : rememberInfiniteTransition, infiniteTransition.animateFloat, Brush
 @Composable
 fun GradientAnimationButton(text: String, startColor: Color, endColor: Color) {
     val currentFontSizePx = with(LocalDensity.current) { 100.dp.toPx() } / 2

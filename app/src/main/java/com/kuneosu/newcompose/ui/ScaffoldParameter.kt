@@ -16,12 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.kuneosu.newcompose.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainTopBar() {
+fun MainTopBar(navController: NavController) {
     // 상단바
     CenterAlignedTopAppBar(
         modifier = Modifier
@@ -43,7 +45,7 @@ fun MainTopBar() {
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(
                             imageVector = Icons.Filled.MailOutline,
-                            contentDescription = "Menu",
+                            contentDescription = stringResource(R.string.mail),
                             tint = Color.White
                         )
                     }
@@ -52,14 +54,16 @@ fun MainTopBar() {
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(
                     imageVector = Icons.Filled.Search,
-                    contentDescription = "Menu",
+                    contentDescription = stringResource(R.string.search),
                     tint = Color.White
                 )
             }
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                navController.navigate("setting_screen")
+            }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.List,
-                    contentDescription = "Menu",
+                    contentDescription = stringResource(R.string.menu),
                     tint = Color.White
                 )
             }

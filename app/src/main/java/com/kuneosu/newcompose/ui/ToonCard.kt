@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,9 +34,13 @@ import androidx.compose.ui.unit.sp
 import androidx.palette.graphics.Palette
 import com.kuneosu.newcompose.data.model.Toon
 import com.kuneosu.newcompose.util.GifImage
+import com.kuneosu.newcompose.util.shimmerBackground
+
+private const val TAG = "LIFE_TRACKING"
 
 @Composable
 fun MakeSevenToons(toons: List<Toon>) {
+    Log.d(TAG, "MakeSevenToons LOAD")
     val sevenToons = toons.chunked(7)
 
     LazyColumn(
@@ -43,8 +48,10 @@ fun MakeSevenToons(toons: List<Toon>) {
             .background(Color.Black)
             .fillMaxWidth()
     ) {
+        Log.d(TAG, "LazyColumn Load ")
         item {
             sevenToons.forEach { toons ->
+                Log.d(TAG, "OneBigSixSmall Call")
                 OneBigSixSmall(toons = toons)
             }
         }
@@ -52,16 +59,80 @@ fun MakeSevenToons(toons: List<Toon>) {
 }
 
 @Composable
+fun ShimmerToons() {
+    Log.d(TAG, "ShimmerToons Load ")
+    LazyColumn(
+        modifier = Modifier
+            .background(Color.Black)
+            .fillMaxWidth()
+    ) {
+        item {
+            ShimmerItem()
+        }
+    }
+}
+
+@Composable
+fun ShimmerItem() {
+    Column {
+        ShimmerBigToon()
+        Row {
+            ShimmerSmallToon()
+            ShimmerSmallToon()
+            ShimmerSmallToon()
+        }
+        Row {
+            ShimmerSmallToon()
+            ShimmerSmallToon()
+            ShimmerSmallToon()
+        }
+    }
+}
+
+@Composable
+fun ShimmerBigToon() {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val cardWidth = screenWidth - 9.dp
+    Card(
+        modifier = Modifier
+            .size(cardWidth, 300.dp)
+            .padding(5.dp)
+            .shimmerBackground(),
+    ) {
+    }
+}
+
+@Composable
+fun ShimmerSmallToon() {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val cardWidth = (screenWidth - 9.dp) / 3
+    Card(
+        modifier = Modifier
+            .size(cardWidth, 280.dp)
+            .padding(5.dp)
+            .shimmerBackground(shape = RoundedCornerShape(8.dp)),
+    ) {
+    }
+}
+
+
+// BigToonCard 1개, SmallToonCard 6개로 구성된 ToonCard Layout
+@Composable
 fun OneBigSixSmall(toons: List<Toon>) {
+    Log.d(TAG, "OneBigSixSmall Load")
     val firstToon = toons[0]
     val otherToons = toons.subList(1, toons.size)
     val chunkedList = otherToons.chunked(3)
 
     Column {
+        Log.d(TAG, "BigToon Call")
         BigToonCard(toon = firstToon)
         chunkedList.forEach { chunk ->
             Row {
                 chunk.forEach { toon ->
+                    Log.d(TAG, "SmallToon call")
                     SmallToonCard(toon = toon)
                 }
             }
@@ -72,16 +143,16 @@ fun OneBigSixSmall(toons: List<Toon>) {
 }
 
 private var isDouble = false
+
+// ToonCard를 여러번 클릭했을 경우 WebView가 여러개 나타나는 것을 방지
+@Suppress("DEPRECATION")
 fun doubleClickChecker(run: () -> Unit) {
-
-
     when {
         isDouble -> {
             Log.d("Double", "Double Click")
             return
         }
     }
-
     run()
     isDouble = true
     Handler().postDelayed({
@@ -92,6 +163,7 @@ fun doubleClickChecker(run: () -> Unit) {
 
 @Composable
 fun SmallToonCard(toon: Toon) {
+    Log.d(TAG, "SmallToonCard load")
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
@@ -167,6 +239,7 @@ fun SmallToonCard(toon: Toon) {
 
 @Composable
 fun BigToonCard(toon: Toon) {
+    Log.d(TAG, "BigToonCard load")
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
