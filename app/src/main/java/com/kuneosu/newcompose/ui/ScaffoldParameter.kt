@@ -51,7 +51,9 @@ fun MainTopBar(navController: NavController) {
                     }
                 }),
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                navController.navigate("search_screen")
+            }) {
                 Icon(
                     imageVector = Icons.Filled.Search,
                     contentDescription = stringResource(R.string.search),

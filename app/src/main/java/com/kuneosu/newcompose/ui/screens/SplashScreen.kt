@@ -1,4 +1,4 @@
-package com.kuneosu.newcompose.ui
+package com.kuneosu.newcompose.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.Image

@@ -1,5 +1,7 @@
 package com.kuneosu.newcompose.ui
 
+//noinspection UsingMaterialAndMaterial3Libraries
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -11,9 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ScrollableTabRow
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +35,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kuneosu.newcompose.R
+import com.kuneosu.newcompose.ui.screens.SearchScreen
+import com.kuneosu.newcompose.ui.screens.SettingScreen
+import com.kuneosu.newcompose.ui.screens.SplashScreen
 import com.kuneosu.newcompose.ui.theme.EndGradientButton1
 import com.kuneosu.newcompose.ui.theme.EndGradientButton2
 import com.kuneosu.newcompose.ui.theme.EndGradientButton3
@@ -93,6 +96,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("setting_screen") {
                         SettingScreen(navController = navController)
+                    }
+                    composable("search_screen") {
+                        SearchScreen(navController = navController)
                     }
                 }
             }
