@@ -1,5 +1,7 @@
 package com.kuneosu.newcompose.viewModel
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.kuneosu.newcompose.data.model.DataProvider
 import com.kuneosu.newcompose.data.model.Toon
@@ -19,5 +21,4 @@ class MainViewModel : ViewModel() {
         get() = true
     val gifOption: Boolean
         get() = _gifOption
-
 }

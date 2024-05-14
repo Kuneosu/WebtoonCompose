@@ -4,10 +4,13 @@ package com.kuneosu.newcompose.ui
 //noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -16,12 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,7 +49,6 @@ import com.kuneosu.newcompose.ui.theme.UnselectedButton
 import com.kuneosu.newcompose.util.BackPressedCallBack
 import com.kuneosu.newcompose.util.GradientAnimationButton
 import com.kuneosu.newcompose.viewModel.MainViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
@@ -66,7 +63,6 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "MainActivity : OnCreate")
         setContent {
             NewComposeTheme {
                 val navController = rememberNavController()
@@ -80,21 +76,40 @@ class MainActivity : ComponentActivity() {
                         SplashScreen(navController)
                     }
 
-                    composable("main_screen") {
-                        var isLoading by remember {
-                            mutableStateOf(true)
+                    composable("main_screen",
+                        enterTransition = {
+                            scaleIn(animationSpec = tween(700))
+                        },
+                        exitTransition = {
+                            scaleOut(animationSpec = tween(700))
                         }
-                        Log.d(TAG, "Main : isLoading = $isLoading")
-                        LaunchedEffect(key1 = true) {
-                            delay(3000L)
-                            Log.d(TAG, "3sec delayed on Main")
-                            isLoading = false
-                            Log.d(TAG, "delayed after isLoading = $isLoading")
-
-                        }
-                        MainScreen(isLoading, navController)
+                    ) {
+//                        var isLoading by remember {
+//                            mutableStateOf(true)
+//                        }
+//                        Log.d(TAG, "Main : isLoading = $isLoading")
+//                        LaunchedEffect(key1 = true) {
+//                            delay(3000L)
+//                            Log.d(TAG, "3sec delayed on Main")
+//                            isLoading = false
+//                            Log.d(TAG, "delayed after isLoading = $isLoading")
+//
+//                        }
+                        MainScreen(navController)
                     }
-                    composable("setting_screen") {
+                    composable("setting_screen",
+                        enterTransition = {
+                            slideIntoContainer(
+                                animationSpec = tween(500),
+                                towards = AnimatedContentTransitionScope.SlideDirection.Left
+                            )
+                        },
+                        exitTransition = {
+                            slideOutOfContainer(
+                                animationSpec = tween(500),
+                                towards = AnimatedContentTransitionScope.SlideDirection.Right
+                            )
+                        }) {
                         SettingScreen(navController = navController)
                     }
                     composable("search_screen") {
@@ -107,10 +122,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MainScreen(
-        isLoading: Boolean,
+//        isLoading: Boolean,
         navController: NavController
     ) {
-        Log.d(TAG, "MainScreen Load")
+
         val mainActivity = LocalContext.current as MainActivity
         val backPressedCallback = BackPressedCallBack(mainActivity)
         mainActivity.onBackPressedDispatcher.addCallback(mainActivity, backPressedCallback.callback)
@@ -126,18 +141,16 @@ class MainActivity : ComponentActivity() {
                 MainTopBar(navController = navController)
             },
         ) {
-            Log.d(TAG, "Collapsing Toolbar Content Load")
-            MainContent(isLoading)
+            MainContent()
         }
     }
 
     @Composable
     fun MainContent(
-        isLoading: Boolean
+//        isLoading: Boolean
     ) {
         Column {
-            Log.d(TAG, "MainContent Load")
-            MainTabRow(isLoading)
+            MainTabRow()
         }
     }
 
@@ -151,8 +164,7 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun MainTabRow(isLoading: Boolean) {
-        Log.d(TAG, "MainTabRow Load")
+    fun MainTabRow() {
         val pages = listOf(
             stringResource(R.string.tab_list_title_1),
             stringResource(R.string.tab_list_title_2),
@@ -239,40 +251,23 @@ class MainActivity : ComponentActivity() {
         ) { page ->
             when (page) {
                 0 -> {
-                    if (isLoading) {
-                        Log.d(TAG, "Page 0, isLoading = $isLoading ")
-                        ShimmerToons()
-                    } else {
-                        Log.d(TAG, "Page 0, isLoading = $isLoading ")
-                        MakeSevenToons(toons = viewModel.toonList2)
-                    }
+
+                    MakeSevenToons(toons = viewModel.toonList2)
+
                 }
 
                 1 -> {
-                    if (isLoading) {
-                        Log.d(TAG, "Page 1, isLoading = $isLoading ")
-                        ShimmerToons()
-                    } else {
-                        Log.d(TAG, "Page 1, isLoading = $isLoading ")
-                        MakeSevenToons(toons = viewModel.toonList1)
-                    }
+                    MakeSevenToons(toons = viewModel.toonList1)
 //                    MakeSevenToons(toons = viewModel.toonList1)
                 }
 
                 2 -> {
-                    Log.d(TAG, "Page 2, isLoading = $isLoading ")
                     MakeSevenToons(toons = viewModel.toonList2)
                 }
 
                 else -> {
-                    if (isLoading) {
-                        Log.d(TAG, "Page 3, isLoading = $isLoading ")
-                        ShimmerToons()
-                    } else {
-                        Log.d(TAG, "Page 3, isLoading = $isLoading ")
-                        MakeSevenToons(toons = viewModel.toonList1)
-                    }
-//                    MakeSevenToons(toons = viewModel.toonList1)
+
+                    MakeSevenToons(toons = viewModel.toonList1)
 
                 }
             }

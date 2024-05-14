@@ -62,7 +62,7 @@ fun SearchScreen(navController: NavController) {
                     },
                 )
                 IconButton(onClick = {
-                    navController.navigate("main_screen")
+                    navController.popBackStack()
                 }, modifier = Modifier.weight(1.5f)) {
                     Icon(
                         imageVector = Icons.Default.Clear,

@@ -56,7 +56,7 @@ fun SettingScreen(navController: NavController) {
                 title = { /*TODO*/ },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.navigate("main_screen")
+                        navController.popBackStack()
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,

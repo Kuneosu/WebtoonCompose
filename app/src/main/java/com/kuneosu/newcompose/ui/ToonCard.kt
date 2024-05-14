@@ -3,7 +3,6 @@ package com.kuneosu.newcompose.ui
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Handler
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,11 +26,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.palette.graphics.Palette
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
+import com.kuneosu.newcompose.R
 import com.kuneosu.newcompose.data.model.Toon
 import com.kuneosu.newcompose.util.GifImage
 import com.kuneosu.newcompose.util.shimmerBackground
@@ -40,7 +41,6 @@ private const val TAG = "LIFE_TRACKING"
 
 @Composable
 fun MakeSevenToons(toons: List<Toon>) {
-    Log.d(TAG, "MakeSevenToons LOAD")
     val sevenToons = toons.chunked(7)
 
     LazyColumn(
@@ -48,10 +48,8 @@ fun MakeSevenToons(toons: List<Toon>) {
             .background(Color.Black)
             .fillMaxWidth()
     ) {
-        Log.d(TAG, "LazyColumn Load ")
         item {
             sevenToons.forEach { toons ->
-                Log.d(TAG, "OneBigSixSmall Call")
                 OneBigSixSmall(toons = toons)
             }
         }
@@ -60,7 +58,6 @@ fun MakeSevenToons(toons: List<Toon>) {
 
 @Composable
 fun ShimmerToons() {
-    Log.d(TAG, "ShimmerToons Load ")
     LazyColumn(
         modifier = Modifier
             .background(Color.Black)
@@ -121,18 +118,15 @@ fun ShimmerSmallToon() {
 // BigToonCard 1개, SmallToonCard 6개로 구성된 ToonCard Layout
 @Composable
 fun OneBigSixSmall(toons: List<Toon>) {
-    Log.d(TAG, "OneBigSixSmall Load")
     val firstToon = toons[0]
     val otherToons = toons.subList(1, toons.size)
     val chunkedList = otherToons.chunked(3)
 
     Column {
-        Log.d(TAG, "BigToon Call")
         BigToonCard(toon = firstToon)
         chunkedList.forEach { chunk ->
             Row {
                 chunk.forEach { toon ->
-                    Log.d(TAG, "SmallToon call")
                     SmallToonCard(toon = toon)
                 }
             }
@@ -149,7 +143,6 @@ private var isDouble = false
 fun doubleClickChecker(run: () -> Unit) {
     when {
         isDouble -> {
-            Log.d("Double", "Double Click")
             return
         }
     }
@@ -163,7 +156,6 @@ fun doubleClickChecker(run: () -> Unit) {
 
 @Composable
 fun SmallToonCard(toon: Toon) {
-    Log.d(TAG, "SmallToonCard load")
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
@@ -189,49 +181,68 @@ fun SmallToonCard(toon: Toon) {
             contentAlignment = Alignment.BottomCenter,
         ) {
             Image(
-                painter = painterResource(id = toon.backgroundImage),
+                painter = // 로딩 중에 표시될 Placeholder 이미지
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current).data(data = toon.backgroundImage)
+                        .apply(block = fun ImageRequest.Builder.() {
+                            placeholder(R.drawable.logo_square) // 로딩 중에 표시될 Placeholder 이미지
+                        }).build()
+                ),
                 contentDescription = "background",
                 modifier = Modifier
                     .fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
 
-            Image(
-                painter = painterResource(id = toon.mainImage!!),
-                contentDescription = "main",
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-
-
-            // Masking with gradient
-            val toonBitmap = BitmapFactory.decodeResource(context.resources, toon.backgroundImage)
-            val mainColor = Palette.from(toonBitmap).generate().dominantSwatch?.rgb
-
-            val gradient = Brush.verticalGradient(
-                colors = listOf(Color(mainColor!!), Color(0, 0, 0, 0)),
-                startY = 650f, 300f,
-            )
-            Box(
-                modifier = Modifier
-                    .background(gradient)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter,
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(id = toon.titleImage),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .padding(bottom = 8.dp)
-                            .fillMaxWidth()
-                    )
-                }
-            }
+//            Image(
+//                painter = // 로딩 중에 표시될 Placeholder 이미지
+//                rememberAsyncImagePainter(
+//                    ImageRequest.Builder(LocalContext.current).data(data = toon.mainImage)
+//                        .apply(block = fun ImageRequest.Builder.() {
+//                            placeholder(R.drawable.logo_square) // 로딩 중에 표시될 Placeholder 이미지
+//                        }).build()
+//                ),
+//                contentDescription = "main",
+//                modifier = Modifier
+//                    .fillMaxSize(),
+//                contentScale = ContentScale.Crop
+//            )
+//
+//
+//            // Masking with gradient
+//            val toonBitmap = BitmapFactory.decodeResource(context.resources, toon.backgroundImage)
+//            val mainColor = Palette.from(toonBitmap).generate().dominantSwatch?.rgb
+//
+//            val gradient = Brush.verticalGradient(
+//                colors = listOf(Color(mainColor!!), Color(0, 0, 0, 0)),
+//                startY = 650f, 300f,
+//            )
+//            Box(
+//                modifier = Modifier
+//                    .background(gradient)
+//                    .fillMaxSize(),
+//                contentAlignment = Alignment.BottomCenter,
+//            ) {
+//                Column(
+//                    horizontalAlignment = Alignment.CenterHorizontally
+//                ) {
+//                    Image(
+//                        painter = // 로딩 중에 표시될 Placeholder 이미지
+//                        rememberAsyncImagePainter(
+//                            ImageRequest.Builder(LocalContext.current).data(data = toon.titleImage)
+//                                .apply(block = fun ImageRequest.Builder.() {
+//                                    placeholder(R.drawable.logo_square) // 로딩 중에 표시될 Placeholder 이미지
+//                                }).build()
+//                        ),
+//                        contentDescription = "",
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier
+//                            .padding(bottom = 8.dp)
+//                            .fillMaxWidth()
+//                    )
+//                }
+//            }
+//            toonBitmap.recycle()
         }
     }
 }
@@ -239,7 +250,6 @@ fun SmallToonCard(toon: Toon) {
 
 @Composable
 fun BigToonCard(toon: Toon) {
-    Log.d(TAG, "BigToonCard load")
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
@@ -264,7 +274,13 @@ fun BigToonCard(toon: Toon) {
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(id = toon.backgroundImage),
+                painter = // 로딩 중에 표시될 Placeholder 이미지
+                rememberAsyncImagePainter(
+                    ImageRequest.Builder(LocalContext.current).data(data = toon.backgroundImage)
+                        .apply(block = fun ImageRequest.Builder.() {
+                            placeholder(R.drawable.logo_square) // 로딩 중에 표시될 Placeholder 이미지
+                        }).build()
+                ),
                 contentDescription = "background",
                 modifier = Modifier
                     .fillMaxSize(),
@@ -275,7 +291,13 @@ fun BigToonCard(toon: Toon) {
                 GifImage(source = toon.mainGIF, modifier = Modifier.fillMaxSize())
             } else {
                 Image(
-                    painter = painterResource(id = toon.mainImage!!),
+                    painter = // 로딩 중에 표시될 Placeholder 이미지
+                    rememberAsyncImagePainter(
+                        ImageRequest.Builder(LocalContext.current).data(data = toon.mainImage)
+                            .apply(block = fun ImageRequest.Builder.() {
+                                placeholder(R.drawable.logo_square) // 로딩 중에 표시될 Placeholder 이미지
+                            }).build()
+                    ),
                     contentDescription = "main",
                     modifier = Modifier
                         .fillMaxSize(),
@@ -301,7 +323,13 @@ fun BigToonCard(toon: Toon) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
-                        painter = painterResource(id = toon.titleImage),
+                        painter = // 로딩 중에 표시될 Placeholder 이미지
+                        rememberAsyncImagePainter(
+                            ImageRequest.Builder(LocalContext.current).data(data = toon.titleImage)
+                                .apply(block = fun ImageRequest.Builder.() {
+                                    placeholder(R.drawable.logo_square) // 로딩 중에 표시될 Placeholder 이미지
+                                }).build()
+                        ),
                         contentDescription = null,
                         contentScale = ContentScale.Fit,
                         modifier = Modifier
@@ -320,6 +348,8 @@ fun BigToonCard(toon: Toon) {
                     )
                 }
             }
+
+            toonBitmap.recycle()
         }
     }
 }

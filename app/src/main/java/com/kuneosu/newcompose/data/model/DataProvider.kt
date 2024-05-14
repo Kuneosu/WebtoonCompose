@@ -105,7 +105,9 @@ object DataProvider {
             backgroundImage = R.drawable.toon_14_background,
             toonUrl = "https://webtoon.kakao.com/content/%EC%98%AC-%ED%9E%98-%EB%A7%88%EB%B2%95%EC%82%AC/4000"
         ),
-    )
+
+
+        )
 
     val toonList2 = listOf(
         Toon(
