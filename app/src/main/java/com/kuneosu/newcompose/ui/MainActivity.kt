@@ -84,17 +84,6 @@ class MainActivity : ComponentActivity() {
                             scaleOut(animationSpec = tween(700))
                         }
                     ) {
-//                        var isLoading by remember {
-//                            mutableStateOf(true)
-//                        }
-//                        Log.d(TAG, "Main : isLoading = $isLoading")
-//                        LaunchedEffect(key1 = true) {
-//                            delay(3000L)
-//                            Log.d(TAG, "3sec delayed on Main")
-//                            isLoading = false
-//                            Log.d(TAG, "delayed after isLoading = $isLoading")
-//
-//                        }
                         MainScreen(navController)
                     }
                     composable("setting_screen",
@@ -251,24 +240,31 @@ class MainActivity : ComponentActivity() {
         ) { page ->
             when (page) {
                 0 -> {
-
-                    MakeSevenToons(toons = viewModel.toonList2)
-
+                    MakeToonList(
+                        bigToons = viewModel.bigToonList,
+                        smallToons = viewModel.smallToonList
+                    )
                 }
 
                 1 -> {
-                    MakeSevenToons(toons = viewModel.toonList1)
-//                    MakeSevenToons(toons = viewModel.toonList1)
+                    MakeToonList(
+                        bigToons = viewModel.bigToonList,
+                        smallToons = viewModel.smallToonList
+                    )
                 }
 
                 2 -> {
-                    MakeSevenToons(toons = viewModel.toonList2)
+                    MakeToonList(
+                        bigToons = viewModel.bigToonList,
+                        smallToons = viewModel.smallToonList
+                    )
                 }
 
                 else -> {
-
-                    MakeSevenToons(toons = viewModel.toonList1)
-
+                    MakeToonList(
+                        bigToons = viewModel.bigToonList,
+                        smallToons = viewModel.smallToonList
+                    )
                 }
             }
         }
