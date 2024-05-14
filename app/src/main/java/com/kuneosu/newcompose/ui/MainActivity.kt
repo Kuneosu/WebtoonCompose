@@ -16,7 +16,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.ScrollableTabRow
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,6 +35,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kuneosu.newcompose.R
+import com.kuneosu.newcompose.data.room.ToonDatabase
 import com.kuneosu.newcompose.ui.screens.SearchScreen
 import com.kuneosu.newcompose.ui.screens.SettingScreen
 import com.kuneosu.newcompose.ui.screens.SplashScreen
@@ -49,16 +52,21 @@ import com.kuneosu.newcompose.ui.theme.UnselectedButton
 import com.kuneosu.newcompose.util.BackPressedCallBack
 import com.kuneosu.newcompose.util.GradientAnimationButton
 import com.kuneosu.newcompose.viewModel.MainViewModel
+import com.kuneosu.newcompose.viewModel.SearchViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.onebone.toolbar.CollapsingToolbarScaffold
 import me.onebone.toolbar.ScrollStrategy
 import me.onebone.toolbar.rememberCollapsingToolbarScaffoldState
 
-private const val TAG = "LIFE_TRACKING"
+//private const val TAG = "LIFE_TRACKING"
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
+    private val searchViewModel by viewModels<SearchViewModel>()
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,18 +110,31 @@ class MainActivity : ComponentActivity() {
                         SettingScreen(navController = navController)
                     }
                     composable("search_screen") {
-                        SearchScreen(navController = navController)
+                        SearchScreen(navController = navController, viewModel = searchViewModel)
                     }
                 }
             }
         }
+
+        val db = ToonDatabase.getDatabase(applicationContext)
+        coroutineScope.launch {
+            db.toonDao().deleteAllBigToon()
+            db.toonDao().deleteAllSmallToon()
+            viewModel.bigToonList.forEach {
+                db.toonDao().insertBigToon(it)
+            }
+            viewModel.smallToonList.forEach {
+                db.toonDao().insertSmallToon(it)
+            }
+        }
     }
+
 
     @Composable
     fun MainScreen(
-//        isLoading: Boolean,
         navController: NavController
     ) {
+
 
         val mainActivity = LocalContext.current as MainActivity
         val backPressedCallback = BackPressedCallBack(mainActivity)

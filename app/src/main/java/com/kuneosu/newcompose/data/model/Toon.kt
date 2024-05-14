@@ -1,17 +1,25 @@
 package com.kuneosu.newcompose.data.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "big_toon")
 data class BigToon(
-    val title: String,
-    val titleImage: Int,
-    val mainImage: Int? = null,
-    val subTitle: String? = null,
-    val backgroundImage: Int,
-    val mainGIF: Int? = null,
-    val toonUrl: String,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "title") val title: String,
+    @ColumnInfo(name = "main_image") val mainImage: Int? = null,
+    @ColumnInfo(name = "title_image") val titleImage: Int,
+    @ColumnInfo(name = "sub_title") val subTitle: String? = null,
+    @ColumnInfo(name = "background_image") val backgroundImage: Int,
+    @ColumnInfo(name = "main_gif") val mainGIF: Int? = null,
+    @ColumnInfo(name = "toon_url") val toonUrl: String,
 )
 
+@Entity(tableName = "small_toon")
 data class SmallToon(
-    val title: String,
-    val mainImage: Int? = null,
-    val toonUrl: String,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @ColumnInfo(name = "title") val title: String,
+    @ColumnInfo(name = "main_image") val mainImage: Int? = null,
+    @ColumnInfo(name = "toon_url") val toonUrl: String,
 )

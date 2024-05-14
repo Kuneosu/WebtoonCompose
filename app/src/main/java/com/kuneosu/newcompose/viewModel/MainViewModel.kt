@@ -16,8 +16,8 @@ class MainViewModel : ViewModel() {
     val smallToonList: List<SmallToon>
         get() = _smallToonList
 
-    private val _gifOption: Boolean
-        get() = true
-    val gifOption: Boolean
-        get() = _gifOption
+//    private val _gifOption: Boolean
+//        get() = true
+//    val gifOption: Boolean
+//        get() = _gifOption
 }

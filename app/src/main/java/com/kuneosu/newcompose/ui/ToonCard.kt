@@ -37,7 +37,7 @@ import com.kuneosu.newcompose.data.model.BigToon
 import com.kuneosu.newcompose.data.model.SmallToon
 import com.kuneosu.newcompose.util.GifImage
 
-private const val TAG = "LIFE_TRACKING"
+//private const val TAG = "LIFE_TRACKING"
 
 
 @Composable
