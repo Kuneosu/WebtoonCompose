@@ -21,6 +21,15 @@ class MainViewModel : ViewModel() {
     val smallToonList: List<SmallToon>
         get() = _smallToonList
 
+    private val _displayChoice = MutableStateFlow(booleanArrayOf(false, false, true))
+    val displayChoice: StateFlow<BooleanArray> = _displayChoice
+
+    fun setDisplayChoice(choice: BooleanArray) {
+        viewModelScope.launch {
+            _displayChoice.value = choice
+        }
+    }
+
 
     private val _themeMode = MutableStateFlow(ThemeMode.SYSTEM)
     val themeMode: StateFlow<ThemeMode> = _themeMode
@@ -28,6 +37,24 @@ class MainViewModel : ViewModel() {
     fun setThemeMode(mode: ThemeMode) {
         viewModelScope.launch {
             _themeMode.value = mode
+        }
+    }
+
+    private val _gifOption = MutableStateFlow(true)
+    val gifOption: StateFlow<Boolean> = _gifOption
+
+    fun setGifOption(option: Boolean) {
+        viewModelScope.launch {
+            _gifOption.value = option
+        }
+    }
+
+    private val _wifiOption = MutableStateFlow(false)
+    val wifiOption: StateFlow<Boolean> = _wifiOption
+
+    fun setWifiOption(option: Boolean) {
+        viewModelScope.launch {
+            _wifiOption.value = option
         }
     }
 }

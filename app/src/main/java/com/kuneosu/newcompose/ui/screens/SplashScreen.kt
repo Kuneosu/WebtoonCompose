@@ -40,6 +40,7 @@ fun SplashLogo() {
             .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
+
         Image(
             painter = painterResource(id = R.drawable.kakao_webtoon_logo),
             contentDescription = "logo",

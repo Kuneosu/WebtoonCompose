@@ -33,6 +33,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -134,7 +136,7 @@ fun SettingScreen(navController: NavController, viewModel: MainViewModel) {
             Spacer(modifier = Modifier.size(20.dp))
             MenuText(text = stringResource(R.string.use_config), icon = null)
             Spacer(modifier = Modifier.size(10.dp))
-            UseOptions()
+            UseOptions(viewModel)
 
             Spacer(modifier = Modifier.size(20.dp))
             AdditionalText()
@@ -189,7 +191,9 @@ fun AdditionalText() {
 
 
 @Composable
-fun UseOptions() {
+fun UseOptions(viewModel: MainViewModel) {
+    val gifOption by viewModel.gifOption.collectAsState()
+    val wifiOption by viewModel.wifiOption.collectAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -199,15 +203,21 @@ fun UseOptions() {
         OptionButton(
             icon = Icons.Default.CheckCircle,
             text = stringResource(R.string.option_video_auto),
-            selected = true
+            selected = gifOption,
+            viewModel = viewModel
         )
-        OptionButton(icon = Icons.Default.AddCircle, text = stringResource(R.string.option_wifi))
+        OptionButton(
+            icon = Icons.Default.AddCircle,
+            text = stringResource(R.string.option_wifi),
+            selected = wifiOption,
+            viewModel = viewModel
+        )
     }
 }
 
 @Composable
 fun OptionButton(
-    text: String, selected: Boolean = false, icon: ImageVector
+    text: String, selected: Boolean = false, icon: ImageVector, viewModel: MainViewModel
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val itemWidth = screenWidth / 2 - 12
@@ -220,7 +230,17 @@ fun OptionButton(
     }
 
     Button(
-        onClick = { /*TODO*/ },
+        onClick = {
+            when (text) {
+                "영상 자동 재생" -> {
+                    viewModel.setGifOption(!selected)
+                }
+
+                "Wi-Fi에서만 회차 감상" -> {
+                    viewModel.setWifiOption(!selected)
+                }
+            }
+        },
         modifier = Modifier.width(itemWidth.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
@@ -246,6 +266,7 @@ fun OptionButton(
 
 @Composable
 fun DisplayStyle(viewModel: MainViewModel) {
+    val displayChoice by viewModel.displayChoice.collectAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -255,17 +276,19 @@ fun DisplayStyle(viewModel: MainViewModel) {
         DisplayStyleButton(
             icon = Icons.Default.CheckCircle,
             text = stringResource(R.string.dark_mode),
-            selected = true,
+            selected = displayChoice[0],
             viewModel = viewModel
         )
         DisplayStyleButton(
             icon = Icons.Default.AddCircle,
             text = stringResource(R.string.light_mode),
+            selected = displayChoice[1],
             viewModel = viewModel
         )
         DisplayStyleButton(
             icon = Icons.Default.AccountCircle,
             text = stringResource(R.string.system_mode),
+            selected = displayChoice[2],
             viewModel = viewModel
         )
     }
@@ -293,14 +316,17 @@ fun DisplayStyleButton(
             when (text) {
                 "다크 모드" -> {
                     viewModel.setThemeMode(ThemeMode.DARK)
+                    viewModel.setDisplayChoice(booleanArrayOf(true, false, false))
                 }
 
                 "라이트 모드" -> {
                     viewModel.setThemeMode(ThemeMode.LIGHT)
+                    viewModel.setDisplayChoice(booleanArrayOf(false, true, false))
                 }
 
                 "시스템 설정" -> {
                     viewModel.setThemeMode(ThemeMode.SYSTEM)
+                    viewModel.setDisplayChoice(booleanArrayOf(false, false, true))
                 }
             }
         },

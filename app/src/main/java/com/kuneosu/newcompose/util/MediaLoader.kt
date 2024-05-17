@@ -18,10 +18,10 @@ import com.kuneosu.newcompose.R
 // 사용 기술/지식 : Coil, rememberAsyncImagePainter
 @Composable
 fun GifImage(
-    source: Int,
+    source: String,
     modifier: Modifier,
     contentScale: ContentScale = ContentScale.Fit,
-    repeat: Int = -1,
+    repeat: Int,
 ) {
     val context = LocalContext.current
     val imageLoader = coil.ImageLoader.Builder(context)

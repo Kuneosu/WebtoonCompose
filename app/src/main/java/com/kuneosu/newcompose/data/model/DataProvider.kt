@@ -6,18 +6,18 @@ object DataProvider {
     val bigToonList = listOf(
         BigToon(
             title = "나 혼자만 레벨업",
-            titleImage = R.drawable.b_toon_title_1,
+            titleImage = "https://i.ibb.co/m8nCdsY/b-toon-title-1.png",
             subTitle = "현군, 장성락(REDICE STUDIO), 추공",
-            backgroundImage = R.drawable.b_toon_back_1,
-            mainGIF = R.drawable.b_toon_main_1,
+            backgroundImage = "https://i.ibb.co/xjsvpdP/b-toon-back-1.jpg",
+            mainGIF = "https://i.ibb.co/tp89pPc/b-toon-main-1.gif",
             toonUrl = "https://webtoon.kakao.com/content/%EB%82%98-%ED%98%BC%EC%9E%90%EB%A7%8C-%EB%A0%88%EB%B2%A8%EC%97%85/2320"
         ),
         BigToon(
             title = "뒤끝작렬",
-            titleImage = R.drawable.b_toon_title_2,
+            titleImage = "https://i.ibb.co/FnD9CLT/b-toon-title-2.png",
             subTitle = "조석호, 시나브로",
-            backgroundImage = R.drawable.b_toon_back_2,
-            mainGIF = R.drawable.b_toon_main_2,
+            backgroundImage = "https://i.ibb.co/k9XhtMv/b-toon-back-2.webp",
+            mainGIF = "https://i.ibb.co/N26Gjry/b-toon-main-2.gif",
             toonUrl = "https://webtoon.kakao.com/content/%EB%92%A4%EB%81%9D%EC%9E%91%EB%A0%AC/2666"
         ),
     )
@@ -83,5 +83,6 @@ object DataProvider {
             mainImage = R.drawable.s_toon_12,
             toonUrl = "https://webtoon.kakao.com/content/%EC%98%AC-%ED%9E%98-%EB%A7%88%EB%B2%95%EC%82%AC/4000"
         ),
-    )
+
+        )
 }

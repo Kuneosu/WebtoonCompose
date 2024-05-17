@@ -8,11 +8,11 @@ import androidx.room.PrimaryKey
 data class BigToon(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo(name = "main_image") val mainImage: Int? = null,
-    @ColumnInfo(name = "title_image") val titleImage: Int,
+    @ColumnInfo(name = "main_image") val mainImage: String? = null,
+    @ColumnInfo(name = "title_image") val titleImage: String,
     @ColumnInfo(name = "sub_title") val subTitle: String? = null,
-    @ColumnInfo(name = "background_image") val backgroundImage: Int,
-    @ColumnInfo(name = "main_gif") val mainGIF: Int? = null,
+    @ColumnInfo(name = "background_image") val backgroundImage: String,
+    @ColumnInfo(name = "main_gif") val mainGIF: String? = null,
     @ColumnInfo(name = "toon_url") val toonUrl: String,
 )
 
