@@ -26,6 +26,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -37,17 +38,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.kuneosu.newcompose.R
+import com.kuneosu.newcompose.ui.MainActivity
+import com.kuneosu.newcompose.ui.theme.ThemeMode
+import com.kuneosu.newcompose.util.OtherScreenBackPressed
+import com.kuneosu.newcompose.viewModel.MainViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen(navController: NavController) {
-
+fun SettingScreen(navController: NavController, viewModel: MainViewModel) {
+    val mainActivity = LocalContext.current as MainActivity
+    val backPressedCallback = OtherScreenBackPressed(navController)
+    mainActivity.onBackPressedDispatcher.addCallback(mainActivity, backPressedCallback.callback)
 
     Scaffold(
         modifier = Modifier
@@ -62,7 +73,7 @@ fun SettingScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -71,18 +82,18 @@ fun SettingScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.Outlined.Settings,
                             contentDescription = "",
-                            tint = Color.White
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black),
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.onBackground),
             )
         },
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.onBackground)
                 .padding(paddingValues = it)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -96,32 +107,32 @@ fun SettingScreen(navController: NavController) {
             ThreeButtons()
 
             Spacer(modifier = Modifier.size(20.dp))
-            MenuText(text = "기다무 알림", icon = Icons.Outlined.Info)
+            MenuText(text = stringResource(R.string.wating_free_notify), icon = Icons.Outlined.Info)
             Spacer(modifier = Modifier.size(10.dp))
             DisableButton()
 
             Spacer(modifier = Modifier.size(20.dp))
-            MenuText(text = "내 소식", icon = Icons.Outlined.Info)
+            MenuText(text = stringResource(R.string.my_news), icon = Icons.Outlined.Info)
             Spacer(modifier = Modifier.size(10.dp))
             DisableButton()
 
             Spacer(modifier = Modifier.size(20.dp))
-            MenuText(text = "공지사항", icon = Icons.Outlined.Info)
+            MenuText(text = stringResource(R.string.notice), icon = Icons.Outlined.Info)
             Spacer(modifier = Modifier.size(10.dp))
             NoticeButton()
 
             Spacer(modifier = Modifier.size(20.dp))
-            MenuText(text = "화면 스타일", null)
+            MenuText(text = stringResource(R.string.display_style), null)
             Spacer(modifier = Modifier.size(10.dp))
-            DisplayStyle()
+            DisplayStyle(viewModel)
 
             Spacer(modifier = Modifier.size(20.dp))
-            MenuText(text = "작품 알림", icon = null)
+            MenuText(text = stringResource(R.string.work_notify), icon = null)
             Spacer(modifier = Modifier.size(10.dp))
             DisableButton()
 
             Spacer(modifier = Modifier.size(20.dp))
-            MenuText(text = "사용 환경", icon = null)
+            MenuText(text = stringResource(R.string.use_config), icon = null)
             Spacer(modifier = Modifier.size(10.dp))
             UseOptions()
 
@@ -129,7 +140,11 @@ fun SettingScreen(navController: NavController) {
             AdditionalText()
 
             Spacer(modifier = Modifier.size(10.dp))
-            Text(text = "© KAKAO WEBTOON", color = Color(63, 63, 63), fontSize = 13.sp)
+            Text(
+                text = stringResource(R.string.copyright_kakao_webtoon),
+                color = Color(63, 63, 63),
+                fontSize = 13.sp
+            )
         }
     }
 }
@@ -142,7 +157,7 @@ fun AdditionalText() {
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         Text(
-            text = "개인정보처리방침",
+            text = stringResource(R.string.copyright_info),
             color = Color(149, 149, 149), fontSize = 13.sp
         )
         VerticalDivider(
@@ -150,7 +165,7 @@ fun AdditionalText() {
             color = Color(82, 82, 82)
         )
         Text(
-            text = "이용약관",
+            text = stringResource(R.string.copyright_condition),
             color = Color(82, 82, 82), fontSize = 13.sp
         )
         VerticalDivider(
@@ -158,7 +173,7 @@ fun AdditionalText() {
             color = Color(82, 82, 82)
         )
         Text(
-            text = "고객센터",
+            text = stringResource(R.string.copyright_customer_center),
             color = Color(82, 82, 82), fontSize = 13.sp
         )
         VerticalDivider(
@@ -166,7 +181,7 @@ fun AdditionalText() {
             color = Color(82, 82, 82)
         )
         Text(
-            text = "사업자 정보",
+            text = stringResource(R.string.copyright_ceo_info),
             color = Color(82, 82, 82), fontSize = 13.sp
         )
     }
@@ -181,8 +196,12 @@ fun UseOptions() {
             .padding(horizontal = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        OptionButton(icon = Icons.Default.CheckCircle, text = "영상 자동 재생", selected = true)
-        OptionButton(icon = Icons.Default.AddCircle, text = "Wi-Fi에서만 회차 감상")
+        OptionButton(
+            icon = Icons.Default.CheckCircle,
+            text = stringResource(R.string.option_video_auto),
+            selected = true
+        )
+        OptionButton(icon = Icons.Default.AddCircle, text = stringResource(R.string.option_wifi))
     }
 }
 
@@ -193,11 +212,11 @@ fun OptionButton(
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val itemWidth = screenWidth / 2 - 12
 
-    var containerColor = Color(34, 34, 34)
-    var textColor = Color.White
+    var containerColor = MaterialTheme.colorScheme.onSecondaryContainer
+    var textColor = MaterialTheme.colorScheme.primary
     if (!selected) {
-        containerColor = Color(22, 22, 22)
-        textColor = Color(94, 94, 94)
+        containerColor = MaterialTheme.colorScheme.secondaryContainer
+        textColor = MaterialTheme.colorScheme.secondary
     }
 
     Button(
@@ -226,33 +245,65 @@ fun OptionButton(
 }
 
 @Composable
-fun DisplayStyle() {
+fun DisplayStyle(viewModel: MainViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        DisplayStyleButton(icon = Icons.Default.CheckCircle, text = "다크 모드", selected = true)
-        DisplayStyleButton(icon = Icons.Default.AddCircle, text = "라이트 모드")
-        DisplayStyleButton(icon = Icons.Default.AccountCircle, text = "시스템 설정")
+        DisplayStyleButton(
+            icon = Icons.Default.CheckCircle,
+            text = stringResource(R.string.dark_mode),
+            selected = true,
+            viewModel = viewModel
+        )
+        DisplayStyleButton(
+            icon = Icons.Default.AddCircle,
+            text = stringResource(R.string.light_mode),
+            viewModel = viewModel
+        )
+        DisplayStyleButton(
+            icon = Icons.Default.AccountCircle,
+            text = stringResource(R.string.system_mode),
+            viewModel = viewModel
+        )
     }
 }
 
 @Composable
-fun DisplayStyleButton(icon: ImageVector, text: String, selected: Boolean = false) {
+fun DisplayStyleButton(
+    icon: ImageVector,
+    text: String,
+    selected: Boolean = false,
+    viewModel: MainViewModel
+) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val itemWidth = screenWidth / 3 - 10
 
-    var containerColor = Color(34, 34, 34)
-    var textColor = Color.White
+    var containerColor = MaterialTheme.colorScheme.onSecondaryContainer
+    var textColor = MaterialTheme.colorScheme.primary
     if (!selected) {
-        containerColor = Color(22, 22, 22)
-        textColor = Color(94, 94, 94)
+        containerColor = MaterialTheme.colorScheme.secondaryContainer
+        textColor = MaterialTheme.colorScheme.secondary
     }
 
     Button(
-        onClick = { /*TODO*/ },
+        onClick = {
+            when (text) {
+                "다크 모드" -> {
+                    viewModel.setThemeMode(ThemeMode.DARK)
+                }
+
+                "라이트 모드" -> {
+                    viewModel.setThemeMode(ThemeMode.LIGHT)
+                }
+
+                "시스템 설정" -> {
+                    viewModel.setThemeMode(ThemeMode.SYSTEM)
+                }
+            }
+        },
         modifier = Modifier.width(itemWidth.dp),
         shape = RoundedCornerShape(8.dp),
         colors = ButtonDefaults.buttonColors(
@@ -284,7 +335,7 @@ fun NoticeButton() {
             .fillMaxWidth()
             .padding(horizontal = 10.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(34, 34, 34)
+            containerColor = MaterialTheme.colorScheme.onPrimary
         ),
         shape = RoundedCornerShape(8.dp)
     ) {
@@ -295,6 +346,7 @@ fun NoticeButton() {
         ) {
             Text(
                 text = "5월 유료화 & 종료 작품 관련 안내",
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = "2024.04.30",
@@ -315,18 +367,18 @@ fun DisableButton() {
             .fillMaxWidth()
             .padding(horizontal = 10.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(22, 22, 22)
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         ),
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(
-            text = "로그인 후 이용 가능합니다.",
+            text = stringResource(R.string.button_text_after_login),
             modifier = Modifier
                 .padding(5.dp)
                 .fillMaxWidth(),
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(76, 76, 76)
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -344,14 +396,14 @@ fun MenuText(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = text, color = Color.White,
+            text = text, color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold, fontSize = 15.sp
         )
         IconButton(onClick = { /*TODO*/ }) {
             if (icon != null) {
                 Icon(
                     imageVector = icon, contentDescription = "",
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -367,14 +419,15 @@ fun CashButton() {
             .fillMaxWidth()
             .padding(horizontal = 10.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(34, 34, 34)
+            containerColor = MaterialTheme.colorScheme.onPrimary
         ),
         shape = RoundedCornerShape(8.dp)
     ) {
         Text(
             text = "캐시 충전",
             modifier = Modifier.padding(5.dp),
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -387,9 +440,9 @@ fun ThreeButtons() {
             .padding(horizontal = 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        SmallButton(text = "캐시 내역")
-        SmallButton(text = "이용권 내역")
-        SmallButton(text = "쿠폰 등록")
+        SmallButton(text = stringResource(R.string.button_text_cash))
+        SmallButton(text = stringResource(R.string.button_text_use_ticket))
+        SmallButton(text = stringResource(R.string.button_text_coupon))
     }
 }
 
@@ -401,7 +454,7 @@ fun SmallButton(text: String) {
         onClick = { /*TODO*/ },
         modifier = Modifier.width(buttonWidth.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(34, 34, 34)
+            containerColor = MaterialTheme.colorScheme.onPrimary
         ),
         shape = RoundedCornerShape(8.dp),
 
@@ -412,7 +465,8 @@ fun SmallButton(text: String) {
                 .fillMaxWidth()
                 .padding(vertical = 5.dp),
             textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -429,7 +483,7 @@ fun LoginText() {
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
-            text = "Login",
+            text = stringResource(R.string.login),
             color = Color(95, 95, 95),
             fontSize = 45.sp
         )

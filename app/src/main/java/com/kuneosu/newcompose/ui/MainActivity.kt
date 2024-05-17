@@ -1,26 +1,32 @@
 package com.kuneosu.newcompose.ui
 
-//noinspection UsingMaterialAndMaterial3Libraries
-//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.ScrollableTabRow
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.Tab
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,8 +34,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -48,7 +55,6 @@ import com.kuneosu.newcompose.ui.theme.StartGradientButton1
 import com.kuneosu.newcompose.ui.theme.StartGradientButton2
 import com.kuneosu.newcompose.ui.theme.StartGradientButton3
 import com.kuneosu.newcompose.ui.theme.StartGradientButton4
-import com.kuneosu.newcompose.ui.theme.UnselectedButton
 import com.kuneosu.newcompose.util.BackPressedCallBack
 import com.kuneosu.newcompose.util.GradientAnimationButton
 import com.kuneosu.newcompose.viewModel.MainViewModel
@@ -68,63 +74,69 @@ class MainActivity : ComponentActivity() {
     private val searchViewModel by viewModels<SearchViewModel>()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
+
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            NewComposeTheme {
-                val navController = rememberNavController()
+            val themeMode by viewModel.themeMode.collectAsState()
+            Crossfade(targetState = themeMode, label = "") { selectedTheme ->
+                NewComposeTheme(selectedTheme) {
 
-                NavHost(
-                    navController = navController,
-                    startDestination = "splash_screen"
-                ) {
+                    val navController = rememberNavController()
 
-                    composable("splash_screen") {
-                        SplashScreen(navController)
-                    }
-
-                    composable("main_screen",
-                        enterTransition = {
-                            scaleIn(animationSpec = tween(700))
-                        },
-                        exitTransition = {
-                            scaleOut(animationSpec = tween(700))
-                        }
+                    NavHost(
+                        navController = navController,
+                        startDestination = "splash_screen"
                     ) {
-                        MainScreen(navController)
-                    }
-                    composable("setting_screen",
-                        enterTransition = {
-                            slideIntoContainer(
-                                animationSpec = tween(500),
-                                towards = AnimatedContentTransitionScope.SlideDirection.Left
-                            )
-                        },
-                        exitTransition = {
-                            slideOutOfContainer(
-                                animationSpec = tween(500),
-                                towards = AnimatedContentTransitionScope.SlideDirection.Right
-                            )
-                        }) {
-                        SettingScreen(navController = navController)
-                    }
-                    composable("search_screen") {
-                        SearchScreen(navController = navController, viewModel = searchViewModel)
+
+                        composable("splash_screen") {
+                            SplashScreen(navController)
+                        }
+
+                        composable("main_screen",
+                            enterTransition = {
+                                scaleIn(animationSpec = tween(700))
+                            },
+                            exitTransition = {
+                                scaleOut(animationSpec = tween(700))
+                            }
+                        ) {
+                            MainScreen(navController)
+                        }
+                        composable("setting_screen",
+                            enterTransition = {
+                                slideIntoContainer(
+                                    animationSpec = tween(500),
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Left
+                                )
+                            },
+                            exitTransition = {
+                                slideOutOfContainer(
+                                    animationSpec = tween(500),
+                                    towards = AnimatedContentTransitionScope.SlideDirection.Right
+                                )
+                            }) {
+                            SettingScreen(navController = navController, viewModel = viewModel)
+                        }
+                        composable("search_screen") {
+                            SearchScreen(navController = navController, viewModel = searchViewModel)
+                        }
                     }
                 }
             }
-        }
 
-        val db = ToonDatabase.getDatabase(applicationContext)
-        coroutineScope.launch {
-            db.toonDao().deleteAllBigToon()
-            db.toonDao().deleteAllSmallToon()
-            viewModel.bigToonList.forEach {
-                db.toonDao().insertBigToon(it)
-            }
-            viewModel.smallToonList.forEach {
-                db.toonDao().insertSmallToon(it)
+            val db = ToonDatabase.getDatabase(applicationContext)
+            coroutineScope.launch {
+                db.toonDao().deleteAllBigToon()
+                db.toonDao().deleteAllSmallToon()
+                viewModel.bigToonList.forEach {
+                    db.toonDao().insertBigToon(it)
+                }
+                viewModel.smallToonList.forEach {
+                    db.toonDao().insertSmallToon(it)
+                }
             }
         }
     }
@@ -148,12 +160,13 @@ class MainActivity : ComponentActivity() {
             state = state,
             scrollStrategy = ScrollStrategy.EnterAlways,
             toolbar = {
-                MainTopBar(navController = navController)
+                MainTopBar(navController = navController, viewModel = viewModel)
             },
         ) {
             MainContent()
         }
     }
+
 
     @Composable
     fun MainContent(
@@ -164,13 +177,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @Preview(showBackground = true)
-    @Composable
-    fun Preview() {
-        NewComposeTheme {
-//            MainScreen()
-        }
-    }
+//    @Preview(showBackground = true)
+//    @Composable
+//    fun Preview() {
+//        NewComposeTheme {
+////            MainScreen()
+//        }
+//    }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
@@ -191,14 +204,21 @@ class MainActivity : ComponentActivity() {
 
         ScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
-            backgroundColor = Color.Black,
+            containerColor = MaterialTheme.colorScheme.background,
             edgePadding = deviceWidth / 3,
+            indicator = {
+                SecondaryIndicator(
+                    modifier = Modifier.background(Color.Transparent),
+                    height = 2.dp,
+                    color = Color.Transparent
+                )
+            }
         ) {
             pages.forEachIndexed { index, text ->
                 val selected = pagerState.currentPage == index
                 Tab(
                     modifier = Modifier
-                        .background(Color.Black)
+                        .background(MaterialTheme.colorScheme.background)
                         .padding(horizontal = 0.dp, vertical = 5.dp),
                     selected = selected,
                     onClick = {
@@ -243,11 +263,26 @@ class MainActivity : ComponentActivity() {
                             }
 
                         } else {
-                            GradientAnimationButton(
-                                text = text,
-                                startColor = UnselectedButton,
-                                endColor = UnselectedButton
-                            )
+                            Surface(
+                                shape = RoundedCornerShape(16.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .border(
+                                        1.dp,
+                                        MaterialTheme.colorScheme.onTertiaryContainer,
+                                        RoundedCornerShape(16.dp)
+                                    )
+                            ) {
+                                Text(
+                                    text = text,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                    modifier = Modifier
+                                        .background(MaterialTheme.colorScheme.tertiaryContainer)
+                                        .padding(horizontal = 24.dp, vertical = 12.dp)
+                                )
+                            }
                         }
                     }
                 )

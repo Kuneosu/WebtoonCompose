@@ -1,71 +1,85 @@
 package com.kuneosu.newcompose.ui.theme
 
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = Color.White,
+    background = Color.Black,
+    // Setting Screen Background Color
+    onBackground = Color.Black,
+    // Setting Screen Button Color
+    onPrimary = Color(0xFF212121),
+
+    // Setting Screen TextField Color
+    surfaceContainer = Color(0xff161616),
+    // Setting Screen TextField Text Color
+    onSurface = Color(0xff555555),
+
+    // Setting Screen Selected Button Color
+    onSecondaryContainer = Color(0xff212121),
+    // Setting Screen Unselected Button Color
+    secondaryContainer = Color(0xff161616),
+    // Setting Screen Unselected Button Text Color
+    secondary = Color(0xff555555),
+
+    // Main Tab row Unselected Button color
+    tertiaryContainer = Color(0xff1b1b1b),
+    // Main Tab row Unselected Button Text color
+    tertiary = Color(0xff5e5e5e),
+    // Main Tab row Border color
+    onTertiaryContainer = Color(0xff1b1b1b)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = Color.Black,
+    background = Color.White,
+    // Setting Screen Background Color
+    onBackground = Color(0xFFf2f2f2),
+    // Setting Screen Button Color
     onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+
+    // Setting Screen TextField Color
+    surfaceContainer = Color(0xffe7e7e7),
+    // Setting Screen TextField Text Color
+    onSurface = Color(0xff9c9c9c),
+
+    // Setting Screen Selected Button Color
+    onSecondaryContainer = Color(0xffffffff),
+    // Setting Screen Unselected Button Color
+    secondaryContainer = Color(0xfff8f8f8),
+    // Setting Screen Unselected Button Text Color
+    secondary = Color(0xffababab),
+
+    // Main Tab row Unselected Button color
+    tertiaryContainer = Color(0xffffffff),
+    // Main Tab row Unselected Button Text color
+    tertiary = Color(0xff989898),
+    // Main Tab row Border color
+    onTertiaryContainer = Color(0xff989898)
 )
+
+enum class ThemeMode {
+    LIGHT, DARK, SYSTEM
+}
 
 @Composable
 fun NewComposeTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    themeMode: ThemeMode,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    val colors = when (themeMode) {
+        ThemeMode.DARK -> DarkColorScheme
+        ThemeMode.LIGHT -> LightColorScheme
+        ThemeMode.SYSTEM -> if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
     }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
-    }
-
-
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = colors,
         typography = Typography,
         content = content
     )

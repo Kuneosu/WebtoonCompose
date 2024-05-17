@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,7 +47,7 @@ fun MakeToonList(bigToons: List<BigToon>, smallToons: List<SmallToon>) {
     var toonCount = 0
     LazyColumn(
         modifier = Modifier
-            .background(Color.Black)
+            .background(MaterialTheme.colorScheme.background)
             .fillMaxWidth()
     ) {
         item {
@@ -137,7 +138,7 @@ fun SmallToonCard(toon: SmallToon) {
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(LocalContext.current).data(data = toon.mainImage)
                         .apply(block = fun ImageRequest.Builder.() {
-                            placeholder(R.drawable.logo_square) // 로딩 중에 표시될 Placeholder 이미지
+                            placeholder(R.drawable.logo_square_dark) // 로딩 중에 표시될 Placeholder 이미지
                         }).build()
                 ),
                 contentDescription = "background",
@@ -180,7 +181,7 @@ fun BigToonCard(toon: BigToon) {
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(LocalContext.current).data(data = toon.backgroundImage)
                         .apply(block = fun ImageRequest.Builder.() {
-                            placeholder(R.drawable.logo_square) // 로딩 중에 표시될 Placeholder 이미지
+                            placeholder(R.drawable.logo_square_dark) // 로딩 중에 표시될 Placeholder 이미지
                         }).build()
                 ),
                 contentDescription = "background",
@@ -197,7 +198,7 @@ fun BigToonCard(toon: BigToon) {
                     rememberAsyncImagePainter(
                         ImageRequest.Builder(LocalContext.current).data(data = toon.mainImage)
                             .apply(block = fun ImageRequest.Builder.() {
-                                placeholder(R.drawable.logo_square) // 로딩 중에 표시될 Placeholder 이미지
+                                placeholder(R.drawable.logo_square_dark) // 로딩 중에 표시될 Placeholder 이미지
                             }).build()
                     ),
                     contentDescription = "main",
@@ -229,7 +230,7 @@ fun BigToonCard(toon: BigToon) {
                         rememberAsyncImagePainter(
                             ImageRequest.Builder(LocalContext.current).data(data = toon.titleImage)
                                 .apply(block = fun ImageRequest.Builder.() {
-                                    placeholder(R.drawable.logo_square) // 로딩 중에 표시될 Placeholder 이미지
+                                    placeholder(R.drawable.logo_square_dark) // 로딩 중에 표시될 Placeholder 이미지
                                 }).build()
                         ),
                         contentDescription = null,

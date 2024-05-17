@@ -1,6 +1,5 @@
 package com.kuneosu.newcompose.ui.screens
 
-//noinspection UsingMaterialAndMaterial3Libraries
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
@@ -10,16 +9,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -75,25 +77,32 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
         containerColor = Color.Black,
         topBar = {
             TopAppBar(
-                modifier = Modifier.padding(10.dp),
-                backgroundColor = Color.Black,
+                modifier = Modifier
+                    .padding(10.dp),
+                backgroundColor = MaterialTheme.colorScheme.background,
+                elevation = 0.dp
 
-                ) {
+            ) {
                 var text by remember { mutableStateOf("") }
-                val containerColor = Color(34, 34, 34)
+                val containerColor = if (MaterialTheme.colorScheme.background == Color.Black) {
+                    Color(34, 34, 34)
+                } else {
+                    Color(238, 238, 238)
+                }
+
                 TextField(
                     modifier = Modifier.weight(8.5f),
                     colors = TextFieldDefaults.colors(
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
+                        focusedTextColor = MaterialTheme.colorScheme.primary,
+                        unfocusedTextColor = MaterialTheme.colorScheme.primary,
                         focusedContainerColor = containerColor,
                         unfocusedContainerColor = containerColor,
                         disabledContainerColor = containerColor,
-                        cursorColor = Color.White,
-                        focusedIndicatorColor = Color(34, 34, 34),
-                        unfocusedIndicatorColor = Color(34, 34, 34),
-                        disabledIndicatorColor = Color(34, 34, 34),
-                        errorIndicatorColor = Color(34, 34, 34),
+                        cursorColor = MaterialTheme.colorScheme.primary,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent,
                     ),
                     shape = RoundedCornerShape(8.dp),
                     singleLine = true,
@@ -117,7 +126,7 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
                     Icon(
                         imageVector = Icons.Default.Clear,
                         contentDescription = "",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -127,7 +136,7 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
 
         Column(
             modifier = Modifier
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues = it)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
@@ -141,6 +150,7 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
             result.forEach { text ->
                 Row(verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(horizontal = 10.dp)
                         .clickable {
                             searchItemClickListener(text, db, context)
@@ -148,11 +158,11 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.primary
                     )
                     Text(
                         text = text,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(10.dp),
                         fontSize = 18.sp
                     )

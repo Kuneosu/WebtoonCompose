@@ -1,6 +1,5 @@
 package com.kuneosu.newcompose.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,15 +17,12 @@ import androidx.navigation.NavController
 import com.kuneosu.newcompose.R
 import kotlinx.coroutines.delay
 
-private const val TAG = "LIFE_TRACKING"
 
 @Composable
 fun SplashScreen(navController: NavController) {
 
     LaunchedEffect(key1 = true) {
-        Log.d(TAG, "Activate SplashScreen.")
         delay(2000)
-        Log.d(TAG, "2sec delayed on Splash, Navigate Main")
         navController.navigate("main_screen")
     }
 
@@ -44,7 +40,6 @@ fun SplashLogo() {
             .background(Color.Black),
         contentAlignment = Alignment.Center
     ) {
-        Log.d(TAG, "SplashLogo Image Load")
         Image(
             painter = painterResource(id = R.drawable.kakao_webtoon_logo),
             contentDescription = "logo",

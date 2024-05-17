@@ -15,14 +15,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.kuneosu.newcompose.ui.theme.NewComposeTheme
+import com.kuneosu.newcompose.ui.theme.ThemeMode
 
 class ToonActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
-            NewComposeTheme {
+            NewComposeTheme(ThemeMode.SYSTEM) {
                 val toonUrl = intent.getStringExtra("toon_url")
                 ToonPageWebView(toonUrl!!)
 //                val toonBackground = intent.getIntExtra("toon_background", 0)
