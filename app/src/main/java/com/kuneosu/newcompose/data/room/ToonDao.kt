@@ -26,6 +26,14 @@ interface ToonDao {
     @Query("SELECT title FROM small_toon WHERE title LIKE '%' || :input || '%'")
     fun searchSmallToon(input: String): List<String>
 
+    // Search for a BigToonUrl
+    @Query("SELECT toon_url FROM big_toon WHERE title = :input")
+    fun searchBigToonUrl(input: String): String?
+
+    // Search for a SmallToonUrl
+    @Query("SELECT toon_url FROM small_toon WHERE title = :input")
+    fun searchSmallToonUrl(input: String): String?
+
     @Insert
     fun insertBigToon(bigToonEntity: BigToon)
 

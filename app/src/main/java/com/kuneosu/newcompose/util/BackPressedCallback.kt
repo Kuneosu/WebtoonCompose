@@ -5,6 +5,7 @@ import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.navigation.NavController
 
 // 뒤로가기 버튼 2회 클릭 시 종료
 // 사용 기술/지식 : Handler.postDelayed, OnBackPressedCallBack, handleOnBackPressed
@@ -31,6 +32,14 @@ class BackPressedCallBack(private var activity: Activity) {
             }, 2000)
 
             Log.d("ONBACK", "handleOnBackPressed: ")
+        }
+    }
+}
+
+class OtherScreenBackPressed(navController: NavController) {
+    val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            navController.popBackStack()
         }
     }
 }

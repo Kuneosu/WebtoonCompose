@@ -1,6 +1,12 @@
 package com.kuneosu.newcompose.ui.screens
 
+//noinspection UsingMaterialAndMaterial3Libraries
+import android.content.Context
+import android.content.Intent
+import android.os.Handler
+import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -33,15 +38,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kuneosu.newcompose.data.room.ToonDatabase
+import com.kuneosu.newcompose.ui.MainActivity
+import com.kuneosu.newcompose.ui.ToonActivity
+import com.kuneosu.newcompose.util.OtherScreenBackPressed
 import com.kuneosu.newcompose.viewModel.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+private var isDouble = false
+
+@Suppress("DEPRECATION")
+fun doubleClickChecker(run: () -> Unit) {
+    when {
+        isDouble -> {
+            return
+        }
+    }
+    run()
+    isDouble = true
+    Handler().postDelayed({
+        isDouble = false
+    }, 300)
+}
+
 @Composable
 fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
     val db = ToonDatabase.getDatabase(LocalContext.current)
     var result by remember { mutableStateOf(listOf<String>()) }
+    val mainActivity = LocalContext.current as MainActivity
+    val backPressedCallback = OtherScreenBackPressed(navController)
+    mainActivity.onBackPressedDispatcher.addCallback(mainActivity, backPressedCallback.callback)
+
+
     Scaffold(
         containerColor = Color.Black,
         topBar = {
@@ -94,6 +123,7 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
             }
         },
     ) {
+        val context = LocalContext.current
 
         Column(
             modifier = Modifier
@@ -109,13 +139,14 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
                 fontSize = 14.sp
             )
             result.forEach { text ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 10.dp)
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .clickable {
+                            searchItemClickListener(text, db, context)
+                        }) {
                     Icon(
-                        imageVector =
-                        Icons.Default.Search,
+                        imageVector = Icons.Default.Search,
                         contentDescription = "",
                         tint = Color.White
                     )
@@ -129,8 +160,35 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
             }
         }
     }
+}
 
+fun searchItemClickListener(text: String, db: ToonDatabase, context: Context) {
+    doubleClickChecker {
+        if (text.isNotEmpty()) {
+            CoroutineScope(Dispatchers.Default).launch {
+                val bigUrl: String? = db
+                    .toonDao()
+                    .searchBigToonUrl(text)
+                val smallUrl: String? = db
+                    .toonDao()
+                    .searchSmallToonUrl(text)
 
+                Log.d(
+                    "SearchScreen",
+                    "bigUrl: $bigUrl, smallUrl: $smallUrl"
+                )
+                if (bigUrl != null) {
+                    val intent = Intent(context, ToonActivity::class.java)
+                    intent.putExtra("toon_url", bigUrl)
+                    context.startActivity(intent)
+                } else if (smallUrl != null) {
+                    val intent = Intent(context, ToonActivity::class.java)
+                    intent.putExtra("toon_url", smallUrl)
+                    context.startActivity(intent)
+                }
+            }
+        }
+    }
 }
 
 @Composable
