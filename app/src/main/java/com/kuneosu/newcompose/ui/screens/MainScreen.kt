@@ -56,8 +56,6 @@ fun MainScreen(
     mainActivity.onBackPressedDispatcher.addCallback(mainActivity, backPressedCallback.callback)
 
     val state = rememberCollapsingToolbarScaffoldState()
-    val configuration = LocalConfiguration.current
-    val deviceWidth = configuration.screenWidthDp.dp
 
     CollapsingToolbarScaffold(
         modifier = Modifier
@@ -196,8 +194,8 @@ fun MainTabRow(viewModel: MainViewModel) {
 
                 1 -> {
                     MakeToonList(
-                        bigToons = viewModel.bigToonList,
-                        smallToons = viewModel.smallToonList,
+                        bigToons = viewModel.reverseBigToonList,
+                        smallToons = viewModel.reverseSmallToonList,
                         viewModel = viewModel
                     )
                 }
@@ -212,8 +210,8 @@ fun MainTabRow(viewModel: MainViewModel) {
 
                 else -> {
                     MakeToonList(
-                        bigToons = viewModel.bigToonList,
-                        smallToons = viewModel.smallToonList,
+                        bigToons = viewModel.shuffleBigToonList,
+                        smallToons = viewModel.shuffleSmallToonList,
                         viewModel = viewModel
                     )
                 }

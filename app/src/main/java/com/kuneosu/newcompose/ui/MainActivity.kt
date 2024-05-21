@@ -74,7 +74,7 @@ class MainActivity : ComponentActivity() {
         ) {
 
             composable("splash_screen") {
-                SplashScreen(navController)
+                SplashScreen(navController, viewModel)
             }
 
             composable("main_screen",

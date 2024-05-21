@@ -26,8 +26,11 @@ object DataProvider {
             mainGIF = "https://i.ibb.co/8bbdbd6/b-toon-main-3.gif",
             toonUrl = "https://webtoon.kakao.com/content/%EA%B2%80%EC%88%A0%EB%AA%85%EA%B0%80-%EB%A7%89%EB%82%B4%EC%95%84%EB%93%A4/2852"
         ),
+    )
 
-        )
+    val reverseBigToonList = bigToonList.reversed()
+
+    val shuffleBigToonList = bigToonList.shuffled()
 
     val smallToonList = listOf(
         SmallToon(
@@ -151,6 +154,9 @@ object DataProvider {
             mainImage = "https://i.ibb.co/s1s5XNJ/s-toon-24.png",
             toonUrl = "https://webtoon.kakao.com/content/%EB%94%A9%EC%8A%A4%EB%9A%B1%EC%8A%A4/760"
         ),
+    )
 
-        )
+    val reverseSmallToonList = smallToonList.reversed()
+
+    val shuffleSmallToonList = smallToonList.shuffled()
 }
