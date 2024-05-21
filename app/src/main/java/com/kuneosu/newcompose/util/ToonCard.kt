@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -43,9 +42,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.kuneosu.newcompose.R
-import com.kuneosu.newcompose.data.model.BigToon
-import com.kuneosu.newcompose.data.model.SmallToon
-import com.kuneosu.newcompose.ui.ToonActivity
+import com.kuneosu.newcompose.data.room.BigToon
+import com.kuneosu.newcompose.data.room.SmallToon
+import com.kuneosu.newcompose.ui.activity.ToonActivity
 import com.kuneosu.newcompose.viewModel.MainViewModel
 
 //private const val TAG = "LIFE_TRACKING"
@@ -180,8 +179,6 @@ fun DisplayCard(
                 }
             }
         }
-        Spacer(modifier = Modifier.size(30.dp))
-
     }
 }
 
@@ -209,8 +206,8 @@ fun SmallToonCard(toon: SmallToon, viewModel: MainViewModel, sizeMode: SIZE = SI
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val cardWidth = when (sizeMode) {
-        SIZE.SMALL -> (screenWidth - 9.dp) / 3
-        SIZE.BIG -> (screenWidth - 90.dp) / 4
+        SIZE.SMALL -> (screenWidth - 4.dp) / 3
+        SIZE.BIG -> (screenWidth - 95.dp) / 4
     }
     val cardHeight = cardWidth * 2
     val wifiOption by viewModel.wifiOption.collectAsState()
@@ -218,7 +215,7 @@ fun SmallToonCard(toon: SmallToon, viewModel: MainViewModel, sizeMode: SIZE = SI
     Card(
         modifier = Modifier
             .size(cardWidth, cardHeight)
-            .padding(5.dp)
+            .padding(2.dp)
             .clickable {
                 doubleClickChecker {
                     val wifiInfo = isWifiConnected(context)
@@ -261,8 +258,8 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel, sizeMode: SIZE = SIZE.S
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
     val cardWidth = when (sizeMode) {
-        SIZE.SMALL -> screenWidth - 9
-        SIZE.BIG -> screenWidth - 90
+        SIZE.SMALL -> screenWidth - 4
+        SIZE.BIG -> screenWidth - 95
     }
     val cardHeight = cardWidth * 0.7
     val wifiOption by viewModel.wifiOption.collectAsState()
@@ -270,7 +267,7 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel, sizeMode: SIZE = SIZE.S
     Card(
         modifier = Modifier
             .size(cardWidth.dp, cardHeight.dp)
-            .padding(5.dp)
+            .padding(2.dp)
             .clickable {
                 doubleClickChecker {
                     val wifiInfo = isWifiConnected(context)
@@ -304,8 +301,6 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel, sizeMode: SIZE = SIZE.S
 
                     val screenHeight = configuration.screenHeightDp
 
-//                    isVisible =
-//                        windowBounds.y in -(cardHeight.toInt())..screenHeight + (cardHeight.toInt()) * 3
 
                     isVisible =
                         (windowBounds.y in -(cardHeight.toInt()) * 2..screenHeight + (cardHeight.toInt()) * 5
@@ -401,3 +396,4 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel, sizeMode: SIZE = SIZE.S
         }
     }
 }
+

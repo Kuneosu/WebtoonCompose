@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kuneosu.newcompose.R
-import com.kuneosu.newcompose.ui.MainActivity
+import com.kuneosu.newcompose.ui.activity.MainActivity
 import com.kuneosu.newcompose.ui.theme.EndGradientButton1
 import com.kuneosu.newcompose.ui.theme.EndGradientButton2
 import com.kuneosu.newcompose.ui.theme.EndGradientButton3
@@ -77,7 +77,8 @@ fun MainTabRow(viewModel: MainViewModel) {
         stringResource(R.string.tab_list_title_1),
         stringResource(R.string.tab_list_title_2),
         stringResource(R.string.tab_list_title_3),
-        stringResource(R.string.tab_list_title_4)
+        stringResource(R.string.tab_list_title_4),
+        stringResource(R.string.tab_list_title_5),
     )
 
     val pageCount = pages.size

@@ -1,4 +1,4 @@
-package com.kuneosu.newcompose.ui
+package com.kuneosu.newcompose.ui.activity
 
 
 import android.annotation.SuppressLint

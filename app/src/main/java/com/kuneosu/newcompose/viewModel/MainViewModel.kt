@@ -1,16 +1,31 @@
 package com.kuneosu.newcompose.viewModel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.kuneosu.newcompose.data.model.BigToon
 import com.kuneosu.newcompose.data.model.DataProvider
-import com.kuneosu.newcompose.data.model.SmallToon
+import com.kuneosu.newcompose.data.room.BigToon
+import com.kuneosu.newcompose.data.room.SmallToon
 import com.kuneosu.newcompose.ui.theme.ThemeMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class MainViewModel : ViewModel() {
+fun BooleanArray.toStringRepresentation(): String {
+    return this.joinToString(separator = ",")
+}
+
+fun String.toBooleanArray(): BooleanArray {
+    return this.split(",").map { it.toBoolean() }.toBooleanArray()
+}
+
+class MainViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val preferences =
+        application.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+
+
     private val _bigToonList: List<BigToon>
         get() = DataProvider.bigToonList
     val bigToonList: List<BigToon>
@@ -49,24 +64,38 @@ class MainViewModel : ViewModel() {
     private val _displayChoice = MutableStateFlow(booleanArrayOf(false, false, true))
     val displayChoice: StateFlow<BooleanArray> = _displayChoice
 
-    fun setDisplayChoice(choice: BooleanArray) {
-        viewModelScope.launch {
-            _displayChoice.value = choice
-        }
-    }
-
 
     private val _themeMode = MutableStateFlow(ThemeMode.SYSTEM)
     val themeMode: StateFlow<ThemeMode> = _themeMode
 
-    fun setThemeMode(mode: ThemeMode) {
+    private val _gifOption = MutableStateFlow(false)
+    val gifOption: StateFlow<Boolean> = _gifOption
+
+    init {
+        // 초기화 시 저장된 테마 모드를 불러옵니다.
+        val savedThemeMode = preferences.getString("theme_mode", ThemeMode.SYSTEM.name)
+        _themeMode.value = ThemeMode.valueOf(savedThemeMode ?: ThemeMode.SYSTEM.name)
+
+        val savedDisplayChoice = preferences.getString("display_choice", null)
+        if (savedDisplayChoice != null) {
+            _displayChoice.value = savedDisplayChoice.toBooleanArray()
+        }
+
+    }
+
+    fun setDisplayChoice(choice: BooleanArray) {
         viewModelScope.launch {
-            _themeMode.value = mode
+            _displayChoice.value = choice
+            preferences.edit().putString("display_choice", choice.toStringRepresentation()).apply()
         }
     }
 
-    private val _gifOption = MutableStateFlow(false)
-    val gifOption: StateFlow<Boolean> = _gifOption
+    fun setThemeMode(mode: ThemeMode) {
+        viewModelScope.launch {
+            _themeMode.value = mode
+            preferences.edit().putString("theme_mode", mode.name).apply()
+        }
+    }
 
     fun setGifOption(option: Boolean) {
         viewModelScope.launch {

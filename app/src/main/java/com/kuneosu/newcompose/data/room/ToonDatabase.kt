@@ -6,8 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.kuneosu.newcompose.data.model.BigToon
-import com.kuneosu.newcompose.data.model.SmallToon
 
 @Database(entities = [BigToon::class, SmallToon::class], version = 4)
 abstract class ToonDatabase : RoomDatabase() {

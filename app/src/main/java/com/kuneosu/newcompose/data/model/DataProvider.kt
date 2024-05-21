@@ -1,5 +1,8 @@
 package com.kuneosu.newcompose.data.model
 
+import com.kuneosu.newcompose.data.room.BigToon
+import com.kuneosu.newcompose.data.room.SmallToon
+
 object DataProvider {
     val bigToonList = listOf(
         BigToon(

@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kuneosu.newcompose.data.room.ToonDatabase
-import com.kuneosu.newcompose.ui.MainActivity
-import com.kuneosu.newcompose.ui.ToonActivity
+import com.kuneosu.newcompose.ui.activity.MainActivity
+import com.kuneosu.newcompose.ui.activity.ToonActivity
 import com.kuneosu.newcompose.util.OtherScreenBackPressed
 import com.kuneosu.newcompose.viewModel.SearchViewModel
 import kotlinx.coroutines.CoroutineScope

@@ -4,8 +4,6 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.kuneosu.newcompose.data.model.BigToon
-import com.kuneosu.newcompose.data.model.SmallToon
 
 @Dao
 interface ToonDao {

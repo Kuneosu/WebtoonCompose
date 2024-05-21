@@ -1,4 +1,4 @@
-package com.kuneosu.newcompose.ui
+package com.kuneosu.newcompose.ui.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -13,6 +13,7 @@ import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,10 +32,11 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<MainViewModel>()
+    private val viewModel by viewModels<MainViewModel> {
+        ViewModelProvider.AndroidViewModelFactory.getInstance(application)
+    }
     private val searchViewModel by viewModels<SearchViewModel>()
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
-
 
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {

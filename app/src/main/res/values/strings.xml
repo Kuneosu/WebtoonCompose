@@ -29,4 +29,5 @@
     <string name="button_text_use_ticket">이용권 내역</string>
     <string name="button_text_coupon">쿠폰 등록</string>
     <string name="login">Login</string>
+    <string name="tab_list_title_5">로맨스</string>
 </resources>
