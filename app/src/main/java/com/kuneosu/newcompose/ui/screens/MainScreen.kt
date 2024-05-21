@@ -56,6 +56,8 @@ fun MainScreen(
     mainActivity.onBackPressedDispatcher.addCallback(mainActivity, backPressedCallback.callback)
 
     val state = rememberCollapsingToolbarScaffoldState()
+    val configuration = LocalConfiguration.current
+    val deviceWidth = configuration.screenWidthDp.dp
 
     CollapsingToolbarScaffold(
         modifier = Modifier

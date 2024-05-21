@@ -22,6 +22,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -41,34 +43,55 @@ import com.kuneosu.newcompose.ui.ToonActivity
 import com.kuneosu.newcompose.viewModel.MainViewModel
 
 //private const val TAG = "LIFE_TRACKING"
+enum class SIZE {
+    SMALL,
+    BIG
+}
 
 
 @Composable
 fun MakeToonList(bigToons: List<BigToon>, smallToons: List<SmallToon>, viewModel: MainViewModel) {
-    val chunkedSmallToons = smallToons.chunked(6)
-    var toonCount = 0
-    LazyColumn(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth()
-    ) {
-        item {
-            bigToons.forEach { bigToon ->
-                // Big Toon 개수가 대비 Small Toon이 부족할 경우,
-                // Small Toon 대비 Big Toon이 부족할 경우 해결 필요
-                if (toonCount >= chunkedSmallToons.size) {
-                    BigToonCard(toon = bigToon, viewModel = viewModel)
-                } else {
-                    OneBigSixSmall(bigToon, chunkedSmallToons[toonCount], viewModel)
-                }
-                toonCount++
-                if (bigToons.size < chunkedSmallToons.size && toonCount == bigToons.size) {
-                    for (i in toonCount until chunkedSmallToons.size) {
-                        val chunkedList = chunkedSmallToons[i].chunked(3)
-                        chunkedList.forEach { chunk ->
-                            Row {
-                                chunk.forEach { toon ->
-                                    SmallToonCard(toon = toon, viewModel = viewModel)
+
+    val configuration = LocalConfiguration.current
+    val screenSize by remember {
+        mutableIntStateOf(configuration.screenWidthDp)
+    }
+
+    if (screenSize > 720) {
+        val chunkedSmallToons = smallToons.chunked(8)
+        var toonCount = 0
+        LazyColumn(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth()
+        ) {
+            item {
+                bigToons.forEach { bigToon ->
+                    // Big Toon 개수가 대비 Small Toon이 부족할 경우,
+                    // Small Toon 대비 Big Toon이 부족할 경우 해결 필요
+                    if (toonCount >= chunkedSmallToons.size) {
+                        BigToonCard(toon = bigToon, viewModel = viewModel)
+                    } else {
+                        DisplayCard(
+                            bigToon,
+                            chunkedSmallToons[toonCount],
+                            viewModel,
+                            sizeMode = SIZE.BIG
+                        )
+                    }
+                    toonCount++
+                    if (bigToons.size < chunkedSmallToons.size && toonCount == bigToons.size) {
+                        for (i in toonCount until chunkedSmallToons.size) {
+                            val chunkedList = chunkedSmallToons[i].chunked(4)
+                            chunkedList.forEach { chunk ->
+                                Row {
+                                    chunk.forEach { toon ->
+                                        SmallToonCard(
+                                            toon = toon,
+                                            viewModel = viewModel,
+                                            sizeMode = SIZE.BIG
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -76,18 +99,72 @@ fun MakeToonList(bigToons: List<BigToon>, smallToons: List<SmallToon>, viewModel
                 }
             }
         }
+    } else {
+        val chunkedSmallToons = smallToons.chunked(6)
+        var toonCount = 0
+        LazyColumn(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth()
+        ) {
+            item {
+                bigToons.forEach { bigToon ->
+                    // Big Toon 개수가 대비 Small Toon이 부족할 경우,
+                    // Small Toon 대비 Big Toon이 부족할 경우 해결 필요
+                    if (toonCount >= chunkedSmallToons.size) {
+                        BigToonCard(toon = bigToon, viewModel = viewModel)
+                    } else {
+                        DisplayCard(
+                            bigToon,
+                            chunkedSmallToons[toonCount],
+                            viewModel,
+                            sizeMode = SIZE.SMALL
+                        )
+                    }
+                    toonCount++
+                    if (bigToons.size < chunkedSmallToons.size && toonCount == bigToons.size) {
+                        for (i in toonCount until chunkedSmallToons.size) {
+                            val chunkedList = chunkedSmallToons[i].chunked(3)
+                            chunkedList.forEach { chunk ->
+                                Row {
+                                    chunk.forEach { toon ->
+                                        SmallToonCard(
+                                            toon = toon,
+                                            viewModel = viewModel,
+                                            sizeMode = SIZE.SMALL
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
+
+
 }
 
 @Composable
-fun OneBigSixSmall(bigToon: BigToon, smallToons: List<SmallToon>, viewModel: MainViewModel) {
-    val chunkedList = smallToons.chunked(3)
+fun DisplayCard(
+    bigToon: BigToon,
+    smallToons: List<SmallToon>,
+    viewModel: MainViewModel,
+    sizeMode: SIZE = SIZE.SMALL
+) {
+    val chunkedList =
+        when (sizeMode) {
+            SIZE.SMALL -> smallToons.chunked(3)
+            SIZE.BIG -> smallToons.chunked(4)
+        }
     Column {
         BigToonCard(toon = bigToon, viewModel = viewModel)
         chunkedList.forEach { chunk ->
             Row {
                 chunk.forEach { toon ->
-                    SmallToonCard(toon = toon, viewModel)
+                    SmallToonCard(toon = toon, viewModel, sizeMode = sizeMode)
                 }
             }
         }
@@ -113,17 +190,22 @@ fun doubleClickChecker(run: () -> Unit) {
     }, 300)
 }
 
+
 @Composable
-fun SmallToonCard(toon: SmallToon, viewModel: MainViewModel) {
+fun SmallToonCard(toon: SmallToon, viewModel: MainViewModel, sizeMode: SIZE = SIZE.SMALL) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-    val cardWidth = (screenWidth - 9.dp) / 3
+    val cardWidth = when (sizeMode) {
+        SIZE.SMALL -> (screenWidth - 9.dp) / 3
+        SIZE.BIG -> (screenWidth - 9.dp) / 4
+    }
+    val cardHeight = cardWidth * 2
     val wifiOption by viewModel.wifiOption.collectAsState()
 
     Card(
         modifier = Modifier
-            .size(cardWidth, 280.dp)
+            .size(cardWidth, cardHeight)
             .padding(5.dp)
             .clickable {
                 doubleClickChecker {
@@ -148,7 +230,7 @@ fun SmallToonCard(toon: SmallToon, viewModel: MainViewModel) {
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(LocalContext.current).data(data = toon.mainImage)
                         .apply(block = fun ImageRequest.Builder.() {
-                            placeholder(R.drawable.logo_square_dark) // 로딩 중에 표시될 Placeholder 이미지
+                            placeholder(R.drawable.splash_image) // 로딩 중에 표시될 Placeholder 이미지
                         }).build()
                 ),
                 contentDescription = "background",
@@ -165,13 +247,14 @@ fun SmallToonCard(toon: SmallToon, viewModel: MainViewModel) {
 fun BigToonCard(toon: BigToon, viewModel: MainViewModel) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-    val cardWidth = screenWidth - 9.dp
+    val screenWidth = configuration.screenWidthDp
+    val cardWidth = screenWidth - 9
+    val cardHeight = cardWidth * 0.7
     val wifiOption by viewModel.wifiOption.collectAsState()
 
     Card(
         modifier = Modifier
-            .size(cardWidth, 300.dp)
+            .size(cardWidth.dp, cardHeight.dp)
             .padding(5.dp)
             .clickable {
                 doubleClickChecker {
@@ -195,9 +278,7 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel) {
                 painter =
                 rememberAsyncImagePainter(
                     ImageRequest.Builder(LocalContext.current).data(data = toon.backgroundImage)
-                        .apply(block = fun ImageRequest.Builder.() {
-                            placeholder(R.drawable.logo_square_dark) // 로딩 중에 표시될 Placeholder 이미지
-                        }).build()
+                        .build()
                 ),
                 contentDescription = "background",
                 modifier = Modifier
@@ -220,9 +301,7 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel) {
                     painter = // 로딩 중에 표시될 Placeholder 이미지
                     rememberAsyncImagePainter(
                         ImageRequest.Builder(LocalContext.current).data(data = toon.mainImage)
-                            .apply(block = fun ImageRequest.Builder.() {
-                                placeholder(R.drawable.logo_square_dark) // 로딩 중에 표시될 Placeholder 이미지
-                            }).build()
+                            .build()
                     ),
                     contentDescription = "main",
                     modifier = Modifier
@@ -231,11 +310,20 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel) {
                 )
             }
 
-            val mainColor = Color(11, 17, 51, 255)
+            val screenSize by remember {
+                mutableIntStateOf(configuration.screenWidthDp)
+            }
+            var stY = 650f
+            var edY = 300f
+
+            if (screenSize > 720) {
+                stY = 1300f
+                edY = 500f
+            }
 
             val gradient = Brush.verticalGradient(
-                colors = listOf(mainColor, Color(255, 255, 255, 0)),
-                startY = 650f, 300f,
+                colors = listOf(Color.Black, Color(255, 255, 255, 0)),
+                startY = stY, edY,
             )
             Box(
                 modifier = Modifier
@@ -250,15 +338,13 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel) {
                         painter = // 로딩 중에 표시될 Placeholder 이미지
                         rememberAsyncImagePainter(
                             ImageRequest.Builder(LocalContext.current).data(data = toon.titleImage)
-                                .apply(block = fun ImageRequest.Builder.() {
-                                    placeholder(R.drawable.logo_square_dark) // 로딩 중에 표시될 Placeholder 이미지
-                                }).build()
+                                .build()
                         ),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .padding(bottom = 6.dp)
-                            .width(cardWidth / 2)
+                            .width((cardWidth / 2).dp)
                     )
                     Text(
                         text = toon.subTitle.toString()

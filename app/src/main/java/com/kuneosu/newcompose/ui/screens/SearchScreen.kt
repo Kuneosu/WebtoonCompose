@@ -1,9 +1,9 @@
 package com.kuneosu.newcompose.ui.screens
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -35,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -183,10 +181,7 @@ fun searchItemClickListener(text: String, db: ToonDatabase, context: Context) {
                     .toonDao()
                     .searchSmallToonUrl(text)
 
-                Log.d(
-                    "SearchScreen",
-                    "bigUrl: $bigUrl, smallUrl: $smallUrl"
-                )
+
                 if (bigUrl != null) {
                     val intent = Intent(context, ToonActivity::class.java)
                     intent.putExtra("toon_url", bigUrl)
@@ -201,9 +196,4 @@ fun searchItemClickListener(text: String, db: ToonDatabase, context: Context) {
     }
 }
 
-@Composable
-@Preview
-fun SearchPreView() {
-//    SearchScreen()
-}
 
