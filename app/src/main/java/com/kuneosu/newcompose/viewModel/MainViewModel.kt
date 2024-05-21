@@ -40,7 +40,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private val _gifOption = MutableStateFlow(true)
+    private val _gifOption = MutableStateFlow(false)
     val gifOption: StateFlow<Boolean> = _gifOption
 
     fun setGifOption(option: Boolean) {

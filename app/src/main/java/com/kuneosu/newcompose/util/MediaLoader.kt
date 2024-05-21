@@ -37,8 +37,6 @@ fun GifImage(
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current).data(data = source)
             .apply(block = fun ImageRequest.Builder.() {
-                // image 불러오는 동안 출력할 이미지
-                placeholder(R.drawable.logo_square_dark)
                 // image 를 불러오는데 실패했을 때 표시할 이미지
                 error(R.drawable.logo_square_dark)
             }).repeatCount(repeat).build(),

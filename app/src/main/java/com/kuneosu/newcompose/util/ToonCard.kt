@@ -23,15 +23,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
@@ -70,7 +76,7 @@ fun MakeToonList(bigToons: List<BigToon>, smallToons: List<SmallToon>, viewModel
                     // Big Toon 개수가 대비 Small Toon이 부족할 경우,
                     // Small Toon 대비 Big Toon이 부족할 경우 해결 필요
                     if (toonCount >= chunkedSmallToons.size) {
-                        BigToonCard(toon = bigToon, viewModel = viewModel)
+                        BigToonCard(toon = bigToon, viewModel = viewModel, sizeMode = SIZE.BIG)
                     } else {
                         DisplayCard(
                             bigToon,
@@ -159,8 +165,14 @@ fun DisplayCard(
             SIZE.SMALL -> smallToons.chunked(3)
             SIZE.BIG -> smallToons.chunked(4)
         }
-    Column {
-        BigToonCard(toon = bigToon, viewModel = viewModel)
+
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        BigToonCard(toon = bigToon, viewModel = viewModel, sizeMode = sizeMode)
         chunkedList.forEach { chunk ->
             Row {
                 chunk.forEach { toon ->
@@ -198,7 +210,7 @@ fun SmallToonCard(toon: SmallToon, viewModel: MainViewModel, sizeMode: SIZE = SI
     val screenWidth = configuration.screenWidthDp.dp
     val cardWidth = when (sizeMode) {
         SIZE.SMALL -> (screenWidth - 9.dp) / 3
-        SIZE.BIG -> (screenWidth - 9.dp) / 4
+        SIZE.BIG -> (screenWidth - 90.dp) / 4
     }
     val cardHeight = cardWidth * 2
     val wifiOption by viewModel.wifiOption.collectAsState()
@@ -244,11 +256,14 @@ fun SmallToonCard(toon: SmallToon, viewModel: MainViewModel, sizeMode: SIZE = SI
 
 
 @Composable
-fun BigToonCard(toon: BigToon, viewModel: MainViewModel) {
+fun BigToonCard(toon: BigToon, viewModel: MainViewModel, sizeMode: SIZE = SIZE.SMALL) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp
-    val cardWidth = screenWidth - 9
+    val cardWidth = when (sizeMode) {
+        SIZE.SMALL -> screenWidth - 9
+        SIZE.BIG -> screenWidth - 90
+    }
     val cardHeight = cardWidth * 0.7
     val wifiOption by viewModel.wifiOption.collectAsState()
 
@@ -271,8 +286,31 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel) {
                 }
             }
     ) {
+
+        var isVisible by remember { mutableStateOf(false) }
+        val density = LocalDensity.current
+
         Box(
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .onGloballyPositioned { coordinates ->
+                    // Check if the composable is within the visible bounds
+                    val windowBounds = density.run {
+                        IntOffset(
+                            coordinates.localToWindow(Offset.Zero).x.toInt(),
+                            coordinates.localToWindow(Offset.Zero).y.toInt()
+                        )
+                    }
+
+                    val screenHeight = configuration.screenHeightDp
+
+//                    isVisible =
+//                        windowBounds.y in -(cardHeight.toInt())..screenHeight + (cardHeight.toInt()) * 3
+
+                    isVisible =
+                        (windowBounds.y in -(cardHeight.toInt()) * 2..screenHeight + (cardHeight.toInt()) * 5
+                                && windowBounds.x in 0..screenWidth)
+                }
         ) {
             Image(
                 painter =
@@ -291,11 +329,13 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel) {
             val gifRepeat = if (gifOption) -1 else 0
 
             if (toon.mainGIF != null) {
-                GifImage(
-                    source = toon.mainGIF,
-                    modifier = Modifier.fillMaxSize(),
-                    repeat = gifRepeat
-                )
+                if (isVisible) {
+                    GifImage(
+                        source = toon.mainGIF,
+                        modifier = Modifier.fillMaxSize(),
+                        repeat = gifRepeat
+                    )
+                }
             } else {
                 Image(
                     painter = // 로딩 중에 표시될 Placeholder 이미지

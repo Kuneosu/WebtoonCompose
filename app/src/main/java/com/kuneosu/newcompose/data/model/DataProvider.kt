@@ -15,10 +15,19 @@ object DataProvider {
             titleImage = "https://i.ibb.co/FnD9CLT/b-toon-title-2.png",
             subTitle = "조석호, 시나브로",
             backgroundImage = "https://i.ibb.co/k9XhtMv/b-toon-back-2.webp",
-            mainGIF = "https://i.ibb.co/N26Gjry/b-toon-main-2.gif",
+            mainGIF = "https://i.ibb.co/v4xMPhj/b-toon-main-2.gif",
             toonUrl = "https://webtoon.kakao.com/content/%EB%92%A4%EB%81%9D%EC%9E%91%EB%A0%AC/2666"
         ),
-    )
+        BigToon(
+            title = "검술명가 막내아들",
+            titleImage = "https://i.ibb.co/9W50XtG/b-toon-title-3.webp",
+            subTitle = "AZI, COBY(Contentslabblue), 조고미, 이제원, 황제펭권",
+            backgroundImage = "https://i.ibb.co/BN9X4sV/b-toon-back-3.webp",
+            mainGIF = "https://i.ibb.co/8bbdbd6/b-toon-main-3.gif",
+            toonUrl = "https://webtoon.kakao.com/content/%EA%B2%80%EC%88%A0%EB%AA%85%EA%B0%80-%EB%A7%89%EB%82%B4%EC%95%84%EB%93%A4/2852"
+        ),
+
+        )
 
     val smallToonList = listOf(
         SmallToon(
@@ -80,6 +89,67 @@ object DataProvider {
             title = "올 힘 마법사",
             mainImage = "https://i.ibb.co/jHDswXW/s-toon-12.png",
             toonUrl = "https://webtoon.kakao.com/content/%EC%98%AC-%ED%9E%98-%EB%A7%88%EB%B2%95%EC%82%AC/4000"
+        ),
+
+        SmallToon(
+            title = "권왕전생",
+            mainImage = "https://i.ibb.co/k4FJKys/s-toon-13.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EA%B6%8C%EC%99%95%EC%A0%84%EC%83%9D/4013"
+        ),
+        SmallToon(
+            title = "저승식당",
+            mainImage = "https://i.ibb.co/0jrdDv7/s-toon-14.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EC%A0%80%EC%8A%B9%EC%8B%9D%EB%8B%B9/3353"
+        ),
+        SmallToon(
+            title = "아비무쌍",
+            mainImage = "https://i.ibb.co/wQVPVWC/s-toon-15.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EC%95%84%EB%B9%84%EB%AC%B4%EC%8C%8D/1395"
+        ),
+        SmallToon(
+            title = "SSS급 랭커 회귀하다",
+            mainImage = "https://i.ibb.co/6mthBG2/s-toon-16.png",
+            toonUrl = "https://webtoon.kakao.com/content/SSS%EA%B8%89-%EB%9E%AD%EC%BB%A4-%ED%9A%8C%EA%B7%80%ED%95%98%EB%8B%A4/3197"
+        ),
+        SmallToon(
+            title = "로드 오브 머니",
+            mainImage = "https://i.ibb.co/FVtQ21Q/s-toon-17.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EB%A1%9C%EB%93%9C-%EC%98%A4%EB%B8%8C-%EB%A8%B8%EB%8B%88/2453"
+        ),
+        SmallToon(
+            title = "던전 리셋",
+            mainImage = "https://i.ibb.co/55QvcfJ/s-toon-18.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EB%8D%98%EC%A0%84-%EB%A6%AC%EC%85%8B/2373"
+        ),
+        SmallToon(
+            title = "남주의 입양딸이 되었습니다",
+            mainImage = "https://i.ibb.co/F6GVrm6/s-toon-19.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EB%82%A8%EC%A3%BC%EC%9D%98-%EC%9E%85%EC%96%91%EB%94%B8%EC%9D%B4-%EB%90%98%EC%97%88%EC%8A%B5%EB%8B%88%EB%8B%A4/2664"
+        ),
+        SmallToon(
+            title = "지옥사원",
+            mainImage = "https://i.ibb.co/HFSmcL6/s-toon-20.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EC%A7%80%EC%98%A5%EC%82%AC%EC%9B%90/1369"
+        ),
+        SmallToon(
+            title = "부서진 성좌의 회귀",
+            mainImage = "https://i.ibb.co/3znzYLs/s-toon-21.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EB%B6%80%EC%84%9C%EC%A7%84-%EC%84%B1%EC%A2%8C%EC%9D%98-%ED%9A%8C%EA%B7%80/3020"
+        ),
+        SmallToon(
+            title = "블러디 체어",
+            mainImage = "https://i.ibb.co/VtycBXf/s-toon-22.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EB%B8%94%EB%9F%AC%EB%94%94-%EC%B2%B4%EC%96%B4/3541"
+        ),
+        SmallToon(
+            title = "사실은 내가 진짜였다",
+            mainImage = "https://i.ibb.co/yYF6qJ9/s-toon-23.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EC%82%AC%EC%8B%A4%EC%9D%80-%EB%82%B4%EA%B0%80-%EC%A7%84%EC%A7%9C%EC%98%80%EB%8B%A4/2424"
+        ),
+        SmallToon(
+            title = "딩스뚱스",
+            mainImage = "https://i.ibb.co/s1s5XNJ/s-toon-24.png",
+            toonUrl = "https://webtoon.kakao.com/content/%EB%94%A9%EC%8A%A4%EB%9A%B1%EC%8A%A4/760"
         ),
 
         )
