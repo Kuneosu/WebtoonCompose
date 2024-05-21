@@ -20,6 +20,6 @@ data class BigToon(
 data class SmallToon(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "title") val title: String,
-    @ColumnInfo(name = "main_image") val mainImage: Int? = null,
+    @ColumnInfo(name = "main_image") val mainImage: String,
     @ColumnInfo(name = "toon_url") val toonUrl: String,
 )

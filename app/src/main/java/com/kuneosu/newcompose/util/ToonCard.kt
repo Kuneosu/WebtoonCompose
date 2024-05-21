@@ -1,7 +1,6 @@
 package com.kuneosu.newcompose.util
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Handler
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -33,7 +32,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.palette.graphics.Palette
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.kuneosu.newcompose.R
@@ -233,13 +231,10 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel) {
                 )
             }
 
-            // Masking with gradient
-            val toonBitmap =
-                BitmapFactory.decodeResource(context.resources, R.drawable.b_toon_back_1)
-            val mainColor = Palette.from(toonBitmap).generate().dominantSwatch?.rgb
+            val mainColor = Color(11, 17, 51, 255)
 
             val gradient = Brush.verticalGradient(
-                colors = listOf(Color(mainColor!!), Color(255, 255, 255, 0)),
+                colors = listOf(mainColor, Color(255, 255, 255, 0)),
                 startY = 650f, 300f,
             )
             Box(
@@ -277,7 +272,6 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel) {
                     )
                 }
             }
-            toonBitmap.recycle()
         }
     }
 }
