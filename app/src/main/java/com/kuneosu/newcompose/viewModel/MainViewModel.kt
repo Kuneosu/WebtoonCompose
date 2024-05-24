@@ -61,6 +61,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val shuffleSmallToonList: List<SmallToon>
         get() = _shuffleSmallToonList
 
+    private val _shuffleBigToonList2: List<BigToon>
+        get() = DataProvider.shuffleBigToonList2
+
+    val shuffleBigToonList2: List<BigToon>
+        get() = _shuffleBigToonList2
+
+    private val _shuffleSmallToonList2: List<SmallToon>
+        get() = DataProvider.shuffleSmallToonList2
+
+    val shuffleSmallToonList2: List<SmallToon>
+        get() = _shuffleSmallToonList2
+
 
     // 사용자 설정을 저장합니다.
 

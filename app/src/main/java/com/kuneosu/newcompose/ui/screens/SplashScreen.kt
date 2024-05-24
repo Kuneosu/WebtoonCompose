@@ -28,7 +28,9 @@ fun SplashScreen(navController: NavController, viewModel: MainViewModel) {
 
     LaunchedEffect(key1 = true) {
         delay(2000)
-        navController.navigate("main_screen")
+        navController.navigate("main_screen") {
+            popUpTo("splash") { inclusive = true }
+        }
     }
 
     SplashLogo(viewModel = viewModel)

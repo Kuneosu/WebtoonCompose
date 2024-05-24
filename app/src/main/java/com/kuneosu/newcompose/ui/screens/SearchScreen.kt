@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -65,7 +68,7 @@ fun doubleClickChecker(run: () -> Unit) {
 @Composable
 fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
     val db = ToonDatabase.getDatabase(LocalContext.current)
-    var result by remember { mutableStateOf(listOf<String>()) }
+//    var result by remember { mutableStateOf(listOf<String>()) }
     val mainActivity = LocalContext.current as MainActivity
     val backPressedCallback = OtherScreenBackPressed(navController)
     mainActivity.onBackPressedDispatcher.addCallback(mainActivity, backPressedCallback.callback)
@@ -81,7 +84,8 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
                 elevation = 0.dp
 
             ) {
-                var text by remember { mutableStateOf("") }
+//                var text by remember { mutableStateOf("") }
+                var text by remember { mutableStateOf(TextFieldValue("")) }
                 val containerColor = if (MaterialTheme.colorScheme.background == Color.Black) {
                     Color(34, 34, 34)
                 } else {
@@ -108,18 +112,36 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
                         Text(text = "작품, 작가, 장르를 입력하세요.", color = Color(93, 93, 93))
                     },
                     value = text,
-                    onValueChange = {
-                        text = it
-                        CoroutineScope(Dispatchers.Default).launch {
-                            val bigToonResult = db.toonDao().searchBigToon(text)
-                            val smallToonResult = db.toonDao().searchSmallToon(text)
-                            viewModel.setSearchResult(bigToonResult, smallToonResult)
-                            result = viewModel.searchResult
-                        }
+                    onValueChange = { newText ->
+                        text = newText
+                        viewModel.searchToons(newText.text, db)
+//                        text = it
+//                        CoroutineScope(Dispatchers.Default).launch {
+//                            val bigToonResult = db.toonDao().searchBigToon(text)
+//                            val smallToonResult = db.toonDao().searchSmallToon(text)
+//                            viewModel.setSearchResult(bigToonResult, smallToonResult)
+//                            result = viewModel.searchResult
+//                        }
                     },
+                    trailingIcon = {
+                        if (text.text.isNotEmpty()) {
+                            IconButton(onClick = {
+                                text = TextFieldValue("")
+                                viewModel.searchToons("", db)
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.Delete,
+                                    contentDescription = "Clear text",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
                 )
                 IconButton(onClick = {
-                    navController.popBackStack()
+                    doubleClickChecker {
+                        navController.popBackStack()
+                    }
                 }, modifier = Modifier.weight(1.5f)) {
                     Icon(
                         imageVector = Icons.Default.Clear,
@@ -131,11 +153,12 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
         },
     ) {
         val context = LocalContext.current
+        val result by viewModel.searchResult.collectAsState()
 
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background)
-                .padding(paddingValues = it)
+                .padding(it)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
@@ -146,16 +169,18 @@ fun SearchScreen(navController: NavController, viewModel: SearchViewModel) {
                 fontSize = 14.sp
             )
             result.forEach { text ->
-                Row(verticalAlignment = Alignment.CenterVertically,
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp)
                         .clickable {
                             searchItemClickListener(text, db, context)
-                        }) {
+                        }
+                ) {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "",
+                        contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Text(

@@ -35,6 +35,8 @@ object DataProvider {
 
     val shuffleBigToonList = bigToonList.shuffled()
 
+    val shuffleBigToonList2 = shuffleBigToonList.shuffled()
+
     val smallToonList = listOf(
         SmallToon(
             title = "접경지역의 동물병원",
@@ -162,4 +164,6 @@ object DataProvider {
     val reverseSmallToonList = smallToonList.reversed()
 
     val shuffleSmallToonList = smallToonList.shuffled()
+
+    val shuffleSmallToonList2 = shuffleSmallToonList.shuffled()
 }

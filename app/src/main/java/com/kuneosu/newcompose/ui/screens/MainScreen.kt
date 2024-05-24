@@ -217,6 +217,14 @@ fun MainTabRow(viewModel: MainViewModel) {
                     )
                 }
 
+                3 -> {
+                    MakeToonList(
+                        bigToons = viewModel.shuffleBigToonList2,
+                        smallToons = viewModel.shuffleSmallToonList2,
+                        viewModel = viewModel
+                    )
+                }
+
                 else -> {
                     MakeToonList(
                         bigToons = viewModel.shuffleBigToonList,
