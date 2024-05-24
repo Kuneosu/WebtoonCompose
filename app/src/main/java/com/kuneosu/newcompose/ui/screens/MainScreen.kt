@@ -142,6 +142,14 @@ fun MainTabRow(viewModel: MainViewModel) {
                                     )
                                 }
 
+                                3 -> {
+                                    GradientAnimationButton(
+                                        text = text,
+                                        startColor = EndGradientButton4,
+                                        endColor = StartGradientButton4
+                                    )
+                                }
+
                                 else -> {
                                     GradientAnimationButton(
                                         text = text,

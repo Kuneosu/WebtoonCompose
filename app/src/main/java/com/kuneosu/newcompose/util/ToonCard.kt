@@ -204,17 +204,17 @@ fun doubleClickChecker(run: () -> Unit) {
 fun SmallToonCard(toon: SmallToon, viewModel: MainViewModel, sizeMode: SIZE = SIZE.SMALL) {
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
+    val screenWidth = configuration.screenWidthDp
     val cardWidth = when (sizeMode) {
-        SIZE.SMALL -> (screenWidth - 4.dp) / 3
-        SIZE.BIG -> (screenWidth - 95.dp) / 4
+        SIZE.SMALL -> (screenWidth - 4) / 3
+        SIZE.BIG -> (screenWidth - 95) / 4
     }
     val cardHeight = cardWidth * 2
     val wifiOption by viewModel.wifiOption.collectAsState()
 
     Card(
         modifier = Modifier
-            .size(cardWidth, cardHeight)
+            .size(cardWidth.dp, cardHeight.dp)
             .padding(2.dp)
             .clickable {
                 doubleClickChecker {
@@ -231,22 +231,42 @@ fun SmallToonCard(toon: SmallToon, viewModel: MainViewModel, sizeMode: SIZE = SI
                 }
             }
     ) {
+        var isVisible by remember { mutableStateOf(false) }
+        val density = LocalDensity.current
+
+
         Box(
             contentAlignment = Alignment.BottomCenter,
+            modifier = Modifier.onGloballyPositioned { coordinates ->
+                // Check if the composable is within the visible bounds
+                val windowBounds = density.run {
+                    IntOffset(
+                        coordinates.localToWindow(Offset.Zero).x.toInt(),
+                        coordinates.localToWindow(Offset.Zero).y.toInt()
+                    )
+                }
+                val screenHeight = configuration.screenHeightDp
+
+                isVisible =
+                    (windowBounds.y in -(cardHeight) * 2..screenHeight + (cardHeight) * 5
+                            && windowBounds.x in -(screenWidth * 2)..screenWidth * 3)
+            }
         ) {
-            Image(
-                painter = // 로딩 중에 표시될 Placeholder 이미지
-                rememberAsyncImagePainter(
-                    ImageRequest.Builder(LocalContext.current).data(data = toon.mainImage)
-                        .apply(block = fun ImageRequest.Builder.() {
-                            placeholder(R.drawable.splash_image) // 로딩 중에 표시될 Placeholder 이미지
-                        }).build()
-                ),
-                contentDescription = "background",
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+            if (isVisible) {
+                Image(
+                    painter = // 로딩 중에 표시될 Placeholder 이미지
+                    rememberAsyncImagePainter(
+                        ImageRequest.Builder(LocalContext.current).data(data = toon.mainImage)
+                            .apply(block = fun ImageRequest.Builder.() {
+                                placeholder(R.drawable.splash_image) // 로딩 중에 표시될 Placeholder 이미지
+                            }).build()
+                    ),
+                    contentDescription = "background",
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
     }
 }
@@ -298,9 +318,7 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel, sizeMode: SIZE = SIZE.S
                             coordinates.localToWindow(Offset.Zero).y.toInt()
                         )
                     }
-
                     val screenHeight = configuration.screenHeightDp
-
 
                     isVisible =
                         (windowBounds.y in -(cardHeight.toInt()) * 2..screenHeight + (cardHeight.toInt()) * 5
