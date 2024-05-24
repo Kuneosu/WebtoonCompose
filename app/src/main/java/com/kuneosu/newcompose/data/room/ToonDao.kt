@@ -8,47 +8,42 @@ import androidx.room.Query
 @Dao
 interface ToonDao {
     @Query("SELECT * FROM big_toon")
-    fun getBigToonList(): List<BigToon>
+    suspend fun getBigToonList(): List<BigToon>
 
     @Query("SELECT * FROM small_toon")
-    fun getSmallToonList(): List<SmallToon>
+    suspend fun getSmallToonList(): List<SmallToon>
 
     @Query("SELECT title FROM big_toon WHERE title = :input")
-    fun getBigToonTitle(input: String): String
+    suspend fun getBigToonTitle(input: String): String
 
-    // Search for a BigToon by title like
     @Query("SELECT title FROM big_toon WHERE title LIKE '%' || :input || '%'")
-    fun searchBigToon(input: String): List<String>
+    suspend fun searchBigToon(input: String): List<String>
 
-    // Search for a SmallToon by title like
     @Query("SELECT title FROM small_toon WHERE title LIKE '%' || :input || '%'")
-    fun searchSmallToon(input: String): List<String>
+    suspend fun searchSmallToon(input: String): List<String>
 
-    // Search for a BigToonUrl
     @Query("SELECT toon_url FROM big_toon WHERE title = :input")
-    fun searchBigToonUrl(input: String): String?
+    suspend fun searchBigToonUrl(input: String): String?
 
-    // Search for a SmallToonUrl
     @Query("SELECT toon_url FROM small_toon WHERE title = :input")
-    fun searchSmallToonUrl(input: String): String?
+    suspend fun searchSmallToonUrl(input: String): String?
 
     @Insert
-    fun insertBigToon(bigToonEntity: BigToon)
+    suspend fun insertBigToon(bigToonEntity: BigToon): Long
 
     @Insert
-    fun insertSmallToon(smallToonEntity: SmallToon)
+    suspend fun insertSmallToon(smallToonEntity: SmallToon): Long
 
     @Delete
-    fun deleteBigToon(bigToonEntity: BigToon)
+    suspend fun deleteBigToon(bigToonEntity: BigToon): Int
 
     @Delete
-    fun deleteSmallToon(smallToonEntity: SmallToon)
+    suspend fun deleteSmallToon(smallToonEntity: SmallToon): Int
 
     @Query("DELETE FROM big_toon")
-    fun deleteAllBigToon()
+    suspend fun deleteAllBigToon(): Int
 
     @Query("DELETE FROM small_toon")
-    fun deleteAllSmallToon()
-
+    suspend fun deleteAllSmallToon(): Int
 
 }

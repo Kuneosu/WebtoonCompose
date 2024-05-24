@@ -414,8 +414,3 @@ fun BigToonCard(toon: BigToon, viewModel: MainViewModel, sizeMode: SIZE = SIZE.S
         }
     }
 }
-
-@Composable
-fun SearchToonCard() {
-
-}
